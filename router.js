@@ -1,21 +1,39 @@
+/*
+ * Copyright (C) hoatle
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
- * jQuery router plugin, v0.1.0
+ * router.js is developed to make it easy to map and route action handlers on both server and client side.
+ *
+ * <h2>Pattern specification</h2>
+ * <ul>
+ *   <li></li>
+ * <ul>
+ *
+ * <h2>Matching rules</h2>
+ * <ul>
+ *   <li>The first successful match is used with no further matches attempted.</li>
+ *   <li>The router will try to find an exact match of pattern specified. A successful match selects the action callback.</li>
+ *   <li>The router will recursively try to match the longest path-prefix. This is done by stepping down the path tree a directory at a time,
+ *       using the ’/’ character as a path separator. The longest match determines the action callback selected.</li>
+ *   <li>If no action callback matched, the defaultCallback will be called.</li>
+ * </ul>
  *
  * @author @hoatle
  * @since  May 1, 2012
- *
- *
- *  The first successful match is used with no further matches attempted.
- *  The router will try to find an exact match of pattern specified. A successful match selects the action callback.
- *  The router will recursively try to match the longest path-prefix.
- *    This is done by stepping down the path tree a directory at a time, using the ’/’ character as a path separator.
- *    The longest match determines the action callback selected.
- *  If no action callback matched, the defaultCallback will be called.
- *
- *  All the callback will be called and passed the first argument as 'value' string.
- *
  */
-
 !(function(root) {
 
   root.router = {
