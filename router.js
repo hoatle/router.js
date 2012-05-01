@@ -41,6 +41,10 @@
     /**
      * Registers a pattern.
      *
+     * Pattern could be:
+     * - stringPath: map('/foo/bar/').
+     * - httpMethod stringPath: map('get /foo/bar').
+     *
      * @param pattern the pattern. This can be a string, or a regular expression.
      */
     map: function(pattern) {
@@ -96,9 +100,64 @@
     url: function(params, extraParamIncluded) {
       //TODO implement
       return '';
+    },
+
+    // shorthand APIs for server side.
+
+    /**
+     * Registers a http GET method handler matching a specified pattern.
+     *
+     * Shorthand for: map('GET pattern').
+     *
+     * @param pattern the specified pattern
+     *
+     * @return {*}
+     */
+    get: function(pattern) {
+
+      return this.map('GET ' + pattern);
+    },
+
+    /**
+     * Registers a http POST method handler matching a specified pattern.
+     *
+     * Shorthand for: map('POST pattern').
+     *
+     * @param pattern the specified pattern
+     * @return {*}
+     */
+    post: function(pattern) {
+
+      return this.map('POST ' + pattern);
+    },
+
+    /**
+     * Registers a http PUT method handler matching a specified pattern.
+     *
+     * Shorthand for: map('PUT pattern').
+     *
+     * @param pattern the specified pattern.
+     *
+     * @return {*}
+     */
+    put: function(pattern) {
+
+      return this.map('PUT ' + pattern);
+    },
+
+    /**
+     * Registers a http DELETE method handler matching a specified pattern.
+     *
+     * Shorthand for: map('DELETE pattern').
+     *
+     * @param pattern the specified pattern.
+     * @return {*}
+     */
+    del: function(pattern) {
+
+      return this.map('DELETE ' + pattern);
     }
   };
-
 
 }).call(this);
 
