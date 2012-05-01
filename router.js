@@ -31,7 +31,7 @@
  *   <li>If no action callback matched, the defaultCallback will be called.</li>
  * </ul>
  *
- * @author @hoatle
+ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since  May 1, 2012
  */
 !(function() {
