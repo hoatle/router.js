@@ -103,6 +103,19 @@
     },
 
     // shorthand APIs for server side.
+    // see: http://www.ietf.org/rfc/rfc2616.txt
+
+    /**
+     * Registers a http OPTIONS method handler matching a specified pattern.
+     *
+     * Shorthand for: map('OPTIONS pattern').
+     *
+     * @param pattern the specified pattern
+     * @return {*}
+     */
+    options: function(pattern) {
+      return this.map('OPTIONS ' + pattern);
+    },
 
     /**
      * Registers a http GET method handler matching a specified pattern.
@@ -116,6 +129,17 @@
     get: function(pattern) {
 
       return this.map('GET ' + pattern);
+    },
+
+    /**
+     * Registers a http HEAD method handler matching a specified pattern.
+     *
+     * Shorthand for: map('HEAD pattern').
+     *
+     * @param pattern
+     */
+    head: function(pattern) {
+      return this.map('HEAD ' + pattern);
     },
 
     /**
@@ -148,6 +172,8 @@
     /**
      * Registers a http DELETE method handler matching a specified pattern.
      *
+     * Can not use 'delete' for method name as this is js reserved keyword.
+     *
      * Shorthand for: map('DELETE pattern').
      *
      * @param pattern the specified pattern.
@@ -156,6 +182,32 @@
     del: function(pattern) {
 
       return this.map('DELETE ' + pattern);
+    },
+
+    /**
+     * Registers a http TRACE method handler matching a specified pattern.
+     *
+     * Shorthand for: map('TRACE pattern').
+     *
+     * @param pattern the specified pattern.
+     * @return {*}
+     */
+    trace: function(pattern) {
+
+      return this.map('TRACE ' + pattern);
+    },
+
+    /**
+     * Registers a http CONNECT method handler matching a specified pattern.
+     *
+     * Shorthand for: map('CONNECT pattern').
+     *
+     * @param pattern the specified pattern.
+     * @return {*}
+     */
+    connect: function(pattern) {
+
+      return this.map('CONNECT ' + pattern);
     }
   };
 
