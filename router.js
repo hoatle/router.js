@@ -43,7 +43,9 @@
      *
      * Pattern could be:
      * - stringPath: map('/foo/bar/').
+     * - regularExpression: map(/\/foo\/bar/).
      * - httpMethod stringPath: map('get /foo/bar').
+     * - httpMethod regularExpression: map('get', /\/foo\/bar/).
      *
      * @param pattern the pattern. This can be a string, or a regular expression.
      */
