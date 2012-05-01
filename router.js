@@ -34,7 +34,8 @@
  * @author @hoatle
  * @since  May 1, 2012
  */
-!(function(root) {
+!(function() {
+  var root = this;
 
   root.router = {
     /**
@@ -64,6 +65,15 @@
      * @param params the literal object of matching condition
      */
     where: function(params) {
+      //TODO implement
+    },
+
+    /**
+     * Removes a registered mapped pattern.
+     *
+     * @param pattern the mapped pattern
+     */
+    removeMap: function(pattern) {
       //TODO implement
     },
 
