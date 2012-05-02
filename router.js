@@ -34,10 +34,16 @@
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since  May 1, 2012
  */
-!(function() {
+!(function () {
+
+  //the global object
   var root = this;
 
-  root.router = {
+  // save the previous router object
+  var previousRouter = root.router;
+
+  //the router object
+  var router = {
     /**
      * Registers a pattern.
      *
@@ -49,7 +55,7 @@
      *
      * @param pattern the pattern. This can be a string, or a regular expression.
      */
-    map: function(pattern) {
+    map: function (pattern) {
       //TODO implement
       return this;
     },
@@ -59,7 +65,7 @@
      *
      * @param callback the callback method
      */
-    to: function(callback) {
+    to: function (callback) {
       //map and sorts by longest path separator.
       //TODO implement
       return this;
@@ -70,7 +76,7 @@
      *
      * @param params the literal object of matching condition
      */
-    where: function(params) {
+    where: function (params) {
       //TODO implement
     },
 
@@ -79,7 +85,7 @@
      *
      * @param pattern the mapped pattern
      */
-    removeMap: function(pattern) {
+    removeMap: function (pattern) {
       //TODO implement
     },
 
@@ -90,7 +96,7 @@
      * @param value the pattern value.
      * @param defaultCallback the default callback.
      */
-    dispatch: function(value, defaultCallback) {
+    dispatch: function (value, defaultCallback) {
       //TODO implement
     },
 
@@ -99,7 +105,7 @@
      *
      * @param params the literal object.
      */
-    url: function(params, extraParamIncluded) {
+    url: function (params, extraParamIncluded) {
       //TODO implement
       return '';
     },
@@ -115,7 +121,7 @@
      * @param pattern the specified pattern
      * @return {*}
      */
-    options: function(pattern) {
+    options: function (pattern) {
       return this.map('OPTIONS ' + pattern);
     },
 
@@ -128,7 +134,7 @@
      *
      * @return {*}
      */
-    get: function(pattern) {
+    get: function (pattern) {
 
       return this.map('GET ' + pattern);
     },
@@ -140,7 +146,7 @@
      *
      * @param pattern
      */
-    head: function(pattern) {
+    head: function (pattern) {
       return this.map('HEAD ' + pattern);
     },
 
@@ -152,7 +158,7 @@
      * @param pattern the specified pattern
      * @return {*}
      */
-    post: function(pattern) {
+    post: function (pattern) {
 
       return this.map('POST ' + pattern);
     },
@@ -166,7 +172,7 @@
      *
      * @return {*}
      */
-    put: function(pattern) {
+    put: function (pattern) {
 
       return this.map('PUT ' + pattern);
     },
@@ -181,7 +187,7 @@
      * @param pattern the specified pattern.
      * @return {*}
      */
-    del: function(pattern) {
+    del: function (pattern) {
 
       return this.map('DELETE ' + pattern);
     },
@@ -194,7 +200,7 @@
      * @param pattern the specified pattern.
      * @return {*}
      */
-    trace: function(pattern) {
+    trace: function (pattern) {
 
       return this.map('TRACE ' + pattern);
     },
@@ -207,11 +213,24 @@
      * @param pattern the specified pattern.
      * @return {*}
      */
-    connect: function(pattern) {
+    connect: function (pattern) {
 
       return this.map('CONNECT ' + pattern);
     }
   };
+
+  // Exports the router object for **Node.js**, with
+  // backwards-compatibility for the old `require()` API. If we're in
+  // the browser, add `router` as a global object via a string identifier,
+  // for Closure Compiler "advanced" mode.
+  if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = router;
+    }
+    exports._ = _;
+  } else {
+    root['router'] = router;
+  }
 
 }).call(this);
 

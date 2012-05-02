@@ -6,8 +6,10 @@
   "author"        : "Hoat Le <hoatlevan@gmail.com>",
   "contributors"  : [],
   "dependencies"  : {
+
   },
   "lib"           : ".",
+  "repository"    : {"type": "git", "url": "git://github.com/hoatle/router.js.git"},
   "main"          : "router.js",
   "version"       : "0.1.0"
 }
