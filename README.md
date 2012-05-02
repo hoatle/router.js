@@ -10,3 +10,90 @@
                                              \/___/
 </pre>
 router.js is developed to make it easy to map and route action handlers on both server and client side.
+
+## Use it on client side
+
+* Simple cases with literal string only
+
+<pre>
+  router.map('/foo/bar/', function() {
+    //action handler
+  });
+</pre>
+
+or:
+
+<pre>
+  router.map('/foo/bar').to(function() {
+    //action handler
+  });
+</pre>
+
+* Using regular expression
+
+<pre>
+  router.map(/\/foo\/bar\//, function() {
+    //action handler
+  });
+</pre>
+
+or:
+
+<pre>
+  router.map(/\/foo\/bar\//).to(function() {
+    //action handler
+  });
+</pre>
+
+* Using parameters
+
+<pre>
+  router.map('/:foo/:bar', function(foo, bar) {
+    //action handler
+  });
+</pre>
+
+or:
+
+<pre>
+  router.map('/:foo/:bar').to(function(foo, bar) {
+    //action handler
+  });
+</pre>
+
+
+* Using parameters with conditions
+
+<pre>
+  router.map('/:foo/:bar/', function() {
+    //action handler
+  }, { //condition
+    foo: [
+      'foo1',
+      'foo2',
+      /[a-Z]/
+    ],
+    bar: [
+      /[0-9]/
+    ]
+  })
+</pre>
+
+or:
+
+<pre>
+  router.map('/:foo/:bar/').to(function(foo, bar) {
+    //action handler
+  }).where({ //condition
+    foo: [
+      'foo1',
+      'foo2',
+      /[a-Z]/
+    ],
+    bar: [
+      /[0-9]/
+    ]
+  });
+</pre>
+
+
