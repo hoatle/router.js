@@ -41,6 +41,10 @@ $(document).ready(function() {
     ok($.isFunction(router.clear), 'router.clear must be a function');
   });
 
+  test('router#find', function() {
+    ok($.isFunction(router.find), 'router.find must be a function');
+  });
+
   test('router#dispatch', function() {
     ok($.isFunction(router.dispatch), 'router.dispatch must be a function');
   });

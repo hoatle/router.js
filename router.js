@@ -101,6 +101,16 @@
     },
 
     /**
+     * Finds a registered mapped pattern.
+     *
+     * Return the Rout object if found, otherwise, null.
+     * @param pattern
+     */
+    find: function(pattern) {
+      //TODO implement
+    },
+
+    /**
      * Routes the value to find the callback registered by a pattern.
      * If no pattern matches this value, the defaultCallback will be called.
      *
