@@ -44,6 +44,10 @@
 
   //the router object
   var router = {
+    //properties
+
+    VERSION: '0.1.0',
+
     /**
      * Registers a pattern.
      *
