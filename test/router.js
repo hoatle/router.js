@@ -11,6 +11,10 @@ $(document).ready(function() {
 
   });
 
+  test('router::properties', function() {
+    equal(router.VERSION, '0.1.0', 'router.VERSION must be 0.1.0');
+  });
+
 
 
   test('router#map', function() {
@@ -24,6 +28,8 @@ $(document).ready(function() {
   test('router#to', function() {
 
     ok($.isFunction(router.to), 'router.to must be a function');
+
+
 
   });
 

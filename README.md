@@ -11,6 +11,10 @@
 </pre>
 router.js is developed to make it easy to map and route action handlers on both server and client side.
 
+## Resources
+
+* Unit test: http://hoatle.github.com/router.js/test/
+
 ## Use it on client side
 
 * Simple cases with literal string only
