@@ -49,11 +49,45 @@
     _ = require('underscore');
   }
 
+  var RouteEntry = function(pattern, callback, conditions) {
+    //TODO pre-check
+
+    this._pattern = pattern;
+    this._callback = callback;
+    this._conditions = conditions;
+
+  };
+
+  _.extend(RouteEntry.prototype, {
+    //getters, setters
+    pattern: function(newPattern) {
+      if (newPattern !== undefined) {
+        this._pattern = newPattern;
+      }
+      return this._pattern;
+    },
+    callback: function(newCallback) {
+      if (_.isFunction(newCallback)) {
+        this._callback = newCallback;
+      }
+      return this._callback;
+    },
+    conditions: function(newConditions) {
+      if (_.isObject(newConditions)) {
+        this._conditions = newConditions;
+      }
+      return this._conditions;
+    }
+
+  });
+
   //the router object
   var router = {
-    //properties
+    // properties
 
     VERSION: '0.1.0',
+    // RouteEntry class
+    RouteEntry: RouteEntry,
 
     /**
      * Registers a pattern.
@@ -107,6 +141,25 @@
      * @param pattern
      */
     find: function(pattern) {
+      //TODO implement
+      return null;
+    },
+
+    /**
+     * Adds a RouteEntry object to be registered.
+     *
+     * @param routeEntry the RouteEntry object
+     */
+    add: function(routeEntry) {
+      //TODO implement
+    },
+
+    /**
+     * Removes a registered RouteEntry object.
+     *
+     * @param routeEntry the RouteEntry object
+     */
+    remove: function(routeEntry) {
       //TODO implement
     },
 
