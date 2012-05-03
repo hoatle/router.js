@@ -14,7 +14,8 @@ $(document).ready(function() {
 
     equal(current.VERSION, '0.1.0', 'current.VERSION must be 0.1.0');
 
-    equal(undefined, window['router'], 'window[\'router\'] must be undefined')
+    //as no previous found, router must be the current one.
+    equal(window['router'], current, 'window[\'router\'] must be the current one');
   });
 
 });

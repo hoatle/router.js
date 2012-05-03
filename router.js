@@ -299,7 +299,9 @@
      * to its previous owner. Returns a reference to this `router` object.
      */
     noConflict: function() {
-      root.router = previousRouter;
+      if (previousRouter !== undefined) {
+        root.router = previousRouter;
+      }
       return this;
     }
   };
