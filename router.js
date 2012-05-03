@@ -81,11 +81,11 @@
     },
 
     /**
-     * Removes a registered mapped pattern.
+     * Clears a registered mapped pattern.
      *
      * @param pattern the mapped pattern
      */
-    removeMap: function (pattern) {
+    clear: function (pattern) {
       //TODO implement
     },
 

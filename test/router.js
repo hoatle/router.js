@@ -31,8 +31,8 @@ $(document).ready(function() {
     ok($.isFunction(router.where), 'router.where must be a function');
   });
 
-  test('router#removeMap', function() {
-    ok($.isFunction(router.removeMap), 'router.removeMap must be a function');
+  test('router#clear', function() {
+    ok($.isFunction(router.clear), 'router.clear must be a function');
   });
 
   test('router#dispatch', function() {
