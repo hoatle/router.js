@@ -36,11 +36,18 @@
  */
 !(function () {
 
-  //the global object
+  // the global root object
   var root = this;
 
   // save the previous router object
   var previousRouter = root.router;
+
+  // Require Underscore, if we're on the server, and it's not already present.
+  var _ = root._;
+
+  if (!_ && (typeof require !== 'undefined')) {
+    _ = require('underscore');
+  }
 
   //the router object
   var router = {
@@ -220,6 +227,17 @@
     connect: function (pattern) {
 
       return this.map('CONNECT ' + pattern);
+    },
+
+    //misc methods
+
+    /**
+     * Runs Router.js in *noConflict* mode, returning the `router` object
+     * to its previous owner. Returns a reference to this `router` object.
+     */
+    noConflict: function() {
+      root.router = previousRouter;
+      return this;
     }
   };
 
