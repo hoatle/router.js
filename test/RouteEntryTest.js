@@ -120,8 +120,12 @@ $(document).ready(function() {
 
   test('RouteEntry#isMatch', function() {
     var routeEntry = new RouteEntry();
-    var patternValue = 'pattern/value';
-    ok(!routeEntry.isMatch(patternValue), 'routeEntry.isMatch(patternValue) must return false');
+    ok(!routeEntry.isMatch('pattern/value'), 'routeEntry.isMatch(\'pattern/value\') must return false');
+
+    routeEntry.pattern('/foo/bar');
+
+    ok(routeEntry.isMatch('/foo/bar'), 'routeEntry.isMatch(\'/foo/bar\') must return true');
+
   });
 
 });

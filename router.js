@@ -110,10 +110,7 @@
      * Checks if the route entry is valid: has required valid pattern + callback.
      */
     isValid: function() {
-      if (_.isString(this._pattern) && _.isFunction(this._callback)) {
-        return true;
-      }
-      return false;
+      return _.isString(this._pattern) && _.isFunction(this._callback);
     },
 
     /**
@@ -122,6 +119,10 @@
      * @param patternValue
      */
     isMatch: function(patternValue) {
+
+      if (this._pattern) {
+        return patternValue.match(this._pattern);
+      }
 
       return false;
     }
