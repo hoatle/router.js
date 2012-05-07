@@ -49,7 +49,7 @@
     _ = require('underscore');
   }
 
-  var RouteEntry = function(pattern, callback, conditions) {
+  var RouteEntry = function(pattern, callback, constraints) {
     if (_.isString(pattern)) {
       this._pattern = pattern;
     }
@@ -58,8 +58,8 @@
       this._callback = callback;
     }
 
-    if (_.isObject(conditions)) {
-      this._conditions = conditions;
+    if (_.isObject(constraints)) {
+      this._constraints = constraints;
     }
 
   };
@@ -94,16 +94,16 @@
       return this._callback;
     },
     /**
-     * Gets or sets the route entry's conditions.
-     * @param newConditions
+     * Gets or sets the route entry's constraints.
+     * @param newConstraints
      * @return {*}
      */
-    conditions: function(newConditions) {
-      if (_.isObject(newConditions)) {
-        this._conditions = newConditions;
+    constraints: function(newConstraints) {
+      if (_.isObject(newConstraints)) {
+        this._constraints = newConstraints;
         return this;
       }
-      return this._conditions;
+      return this._constraints;
     },
 
     /**
@@ -118,13 +118,8 @@
      *
      * @param patternValue
      */
-    isMatch: function(patternValue) {
-
-      if (this._pattern) {
-        return patternValue.match(this._pattern);
-      }
-
-      return false;
+    isMatched: function(patternValue) {
+      return this._pattern && patternValue &&  patternValue.match(this._pattern);
     }
 
   });
@@ -167,9 +162,9 @@
     /**
      * Defines the matching condition.
      *
-     * @param params the literal object of matching condition
+     * @param constraints the literal object of matching condition
      */
-    where: function (params) {
+    where: function (constraints) {
       //TODO implement
     },
 
