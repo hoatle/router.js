@@ -153,6 +153,16 @@
     RouteEntry: RouteEntry,
 
     /**
+     * Configures the router's behavior instead of default's one.
+     *
+     * @param configs the literal configuration object
+     */
+    config: function(configs) {
+      //TODO implement
+
+    },
+
+    /**
      * Registers a pattern.
      *
      * Pattern could be:

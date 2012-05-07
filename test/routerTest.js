@@ -17,6 +17,12 @@ $(document).ready(function() {
   });
 
 
+  test('router#config', function() {
+
+    ok(_.isFunction(router.config), 'router.config must be a function');
+
+  });
+
 
   test('router#map', function() {
 
