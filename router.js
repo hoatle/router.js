@@ -50,33 +50,81 @@
   }
 
   var RouteEntry = function(pattern, callback, conditions) {
-    //TODO pre-check
+    if (_.isString(pattern)) {
+      this._pattern = pattern;
+    }
 
-    this._pattern = pattern;
-    this._callback = callback;
-    this._conditions = conditions;
+    if (_.isFunction(callback)) {
+      this._callback = callback;
+    }
+
+    if (_.isObject(conditions)) {
+      this._conditions = conditions;
+    }
 
   };
 
   _.extend(RouteEntry.prototype, {
     //getters, setters
+
+    /**
+     * Gets or sets the route entry's pattern.
+     *
+     * @param newPattern
+     * @return {*}
+     */
     pattern: function(newPattern) {
-      if (newPattern !== undefined) {
+      if (_.isString(newPattern)) {
         this._pattern = newPattern;
+        return this;
       }
       return this._pattern;
     },
+    /**
+     * Gets or sets the route entry's callback.
+     *
+     * @param newCallback
+     * @return {*}
+     */
     callback: function(newCallback) {
       if (_.isFunction(newCallback)) {
         this._callback = newCallback;
+        return this;
       }
       return this._callback;
     },
+    /**
+     * Gets or sets the route entry's conditions.
+     * @param newConditions
+     * @return {*}
+     */
     conditions: function(newConditions) {
       if (_.isObject(newConditions)) {
         this._conditions = newConditions;
+        return this;
       }
       return this._conditions;
+    },
+
+    /**
+     * Checks if the route entry is valid: has required valid pattern + callback.
+     */
+    isValid: function() {
+      return _.isString(this._pattern) && _.isFunction(this._callback);
+    },
+
+    /**
+     * Checks if the patternValue matches this route entry.
+     *
+     * @param patternValue
+     */
+    isMatch: function(patternValue) {
+
+      if (this._pattern) {
+        return patternValue.match(this._pattern);
+      }
+
+      return false;
     }
 
   });
