@@ -103,9 +103,11 @@ $(document).ready(function() {
     ok(_.isUndefined(routeEntry4.constraints()), 'routeEntry4.constraints() must be undefined');
 
     //regular expression for pattern
+    var regPattern = /foo\/bar/;
+    routeEntry4.pattern(regPattern);
 
-    routeEntry4.pattern(/foo\/bar/);
     ok(_.isRegExp(routeEntry4.pattern()), '_.isRegExp(routeEntry4.pattern()) must return true');
+    equal(routeEntry4.pattern(), regPattern, 'routeEntry4.pattern() must return: ' + regPattern);
 
   });
 
