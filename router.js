@@ -61,20 +61,23 @@
   _.extend(RouteEntry.prototype, {
     //getters, setters
     pattern: function(newPattern) {
-      if (newPattern !== undefined) {
+      if (_.isString(newPattern)) {
         this._pattern = newPattern;
+        return this;
       }
       return this._pattern;
     },
     callback: function(newCallback) {
       if (_.isFunction(newCallback)) {
         this._callback = newCallback;
+        return this;
       }
       return this._callback;
     },
     conditions: function(newConditions) {
       if (_.isObject(newConditions)) {
         this._conditions = newConditions;
+        return this;
       }
       return this._conditions;
     }
