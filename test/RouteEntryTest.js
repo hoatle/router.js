@@ -102,6 +102,11 @@ $(document).ready(function() {
     ok(_.isUndefined(routeEntry4.callback()), 'routeEntry4.callback() must be undefined');
     ok(_.isUndefined(routeEntry4.constraints()), 'routeEntry4.constraints() must be undefined');
 
+    //regular expression for pattern
+
+    routeEntry4.pattern(/foo\/bar/);
+    ok(_.isRegExp(routeEntry4.pattern()), '_.isRegExp(routeEntry4.pattern()) must return true');
+
   });
 
   test('RouteEntry#isValid', function() {
@@ -140,6 +145,8 @@ $(document).ready(function() {
     routeEntry.pattern('/foo/bar');
 
     ok(routeEntry.isMatched('/foo/bar'), 'routeEntry.isMatched(\'/foo/bar\') must return true');
+
+
 
     routeEntry.pattern('/:para1/:param2');
 

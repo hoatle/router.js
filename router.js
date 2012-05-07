@@ -50,7 +50,7 @@
   }
 
   var RouteEntry = function(pattern, callback, constraints) {
-    if (_.isString(pattern)) {
+    if (_.isString(pattern) || _.isRegExp(pattern)) {
       this._pattern = pattern;
     }
 
@@ -74,7 +74,7 @@
      * @return {*}
      */
     pattern: function(newPattern) {
-      if (_.isString(newPattern)) {
+      if (_.isString(newPattern) || _.isRegExp(newPattern)) {
         this._pattern = newPattern;
         return this;
       }
