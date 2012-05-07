@@ -126,6 +126,10 @@ $(document).ready(function() {
 
     ok(routeEntry.isMatched('/foo/bar'), 'routeEntry.isMatched(\'/foo/bar\') must return true');
 
+    routeEntry.pattern('/:para1/:param2');
+
+    ok(routeEntry.isMatched('/fooParam/barParam'), 'routeEntry.isMatched(\'/fooParam/barParam\') must return true');
+
   });
 
 });
