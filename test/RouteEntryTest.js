@@ -6,7 +6,22 @@ $(document).ready(function() {
 
   var RouteEntry = router.RouteEntry;
 
-  test('router.RouteEntry', function() {
+  test('RouteEntry basic', function() {
+
+    expect(7);
+
+    ok(RouteEntry.prototype.pattern, 'RouteEntry.prototype.pattern must be available');
+    ok(RouteEntry.prototype.callback, 'RouteEntry.prototype.callback must be available');
+    ok(RouteEntry.prototype.constraints, 'RouteEntry.prototype.constraints must be available');
+    ok(RouteEntry.prototype.isValid, 'RouteEntry.prototype.isValid must be available');
+    ok(RouteEntry.prototype.isMatched, 'RouteEntry.prototype.isMatched must be available');
+    ok(RouteEntry.prototype.dispatch, 'RouteEntry.prototype.dispatch must be available');
+    ok(RouteEntry.prototype.url, 'RouteEntry.prototype.url must be available');
+
+  });
+
+
+  test('RouteEntry instance', function() {
     var routeEntry = new RouteEntry();
     ok(_.isObject(routeEntry), 'routeEntry must be an object');
 

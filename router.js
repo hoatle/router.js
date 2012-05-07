@@ -120,6 +120,26 @@
      */
     isMatched: function(patternValue) {
       return this._pattern && patternValue &&  patternValue.match(this._pattern);
+    },
+
+    /**
+     * Dispatches the matched pattern value to the corresponding callback.
+     *
+     * @param patternValue
+     */
+    dispatch: function(patternValue) {
+      //TODO implement
+    },
+
+    /**
+     * Generates url path from literal params object.
+     *
+     * @param params the literal params object
+     *
+     * @param extraParamIncluded boolean value
+     */
+    url: function(params, extraParamIncluded) {
+      //TODO implement
     }
 
   });
