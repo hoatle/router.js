@@ -66,6 +66,13 @@
 
   _.extend(RouteEntry.prototype, {
     //getters, setters
+
+    /**
+     * Gets or sets the route entry's pattern.
+     *
+     * @param newPattern
+     * @return {*}
+     */
     pattern: function(newPattern) {
       if (_.isString(newPattern)) {
         this._pattern = newPattern;
@@ -73,6 +80,12 @@
       }
       return this._pattern;
     },
+    /**
+     * Gets or sets the route entry's callback.
+     *
+     * @param newCallback
+     * @return {*}
+     */
     callback: function(newCallback) {
       if (_.isFunction(newCallback)) {
         this._callback = newCallback;
@@ -80,12 +93,37 @@
       }
       return this._callback;
     },
+    /**
+     * Gets or sets the route entry's conditions.
+     * @param newConditions
+     * @return {*}
+     */
     conditions: function(newConditions) {
       if (_.isObject(newConditions)) {
         this._conditions = newConditions;
         return this;
       }
       return this._conditions;
+    },
+
+    /**
+     * Checks if the route entry is valid: has required valid pattern + callback.
+     */
+    isValid: function() {
+      if (_.isString(this._pattern) && _.isFunction(this._callback)) {
+        return true;
+      }
+      return false;
+    },
+
+    /**
+     * Checks if the patternValue matches this route entry.
+     *
+     * @param patternValue
+     */
+    isMatch: function(patternValue) {
+
+      return false;
     }
 
   });

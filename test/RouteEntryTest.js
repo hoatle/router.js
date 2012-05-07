@@ -87,8 +87,41 @@ $(document).ready(function() {
     ok(_.isUndefined(routeEntry4.callback()), 'routeEntry4.callback() must be undefined');
     ok(_.isUndefined(routeEntry4.conditions()), 'routeEntry4.conditions() must be undefined');
 
+  });
 
+  test('RouteEntry#isValid', function() {
 
+    var routeEntry = new RouteEntry();
+
+    ok(!routeEntry.isValid(), 'routeEntry.isValid() must return false');
+
+    routeEntry.pattern(':foo/:bar');
+
+    ok(!routeEntry.isValid(), 'routeEntry.isValid() must return false');
+
+    routeEntry.callback(function(foo, bar) {
+
+    });
+
+    ok(routeEntry.isValid(), 'routeEntry.isValid must return true');
+
+    routeEntry.conditions({
+      foo: [
+        'test'
+      ],
+      bar: [
+        /a-z/
+      ]
+    });
+
+    ok(routeEntry.isValid(), 'routeEntry.isValid must return true');
+
+  });
+
+  test('RouteEntry#isMatch', function() {
+    var routeEntry = new RouteEntry();
+    var patternValue = 'pattern/value';
+    ok(!routeEntry.isMatch(patternValue), 'routeEntry.isMatch(patternValue) must return false');
   });
 
 });
