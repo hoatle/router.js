@@ -45,9 +45,9 @@ $(document).ready(function() {
 
     var routeEntry2 = new RouteEntry(pattern, callback, conditions);
 
-    equal(routeEntry2.pattern(null), pattern, 'routeEntry2.pattern() must be ' + pattern);
-    equal(routeEntry2.callback(undefined), callback, 'routeEntry2.callback() must be ' + callback);
-    equal(routeEntry2.conditions(false), conditions, 'routeEntry2.conditions() must be ' + conditions);
+    equal(routeEntry2.pattern(null), pattern, 'routeEntry2.pattern() must be: ' + pattern);
+    equal(routeEntry2.callback(undefined), callback, 'routeEntry2.callback() must be: ' + callback);
+    equal(routeEntry2.conditions(false), conditions, 'routeEntry2.conditions() must be: ' + conditions);
 
     var pattern2 = '/:foo/:bar2',
       callback2 = function() {
@@ -76,6 +76,16 @@ $(document).ready(function() {
     equal(routeEntry3.pattern(), pattern2, 'routeEntry3.pattern() must be ' + pattern2);
     equal(routeEntry3.callback(), callback2, 'routeEntry3.callback() must be ' + callback2);
     equal(routeEntry3.conditions(), conditions2, 'routeEntry3.conditions() must be ' + conditions2);
+
+
+
+    //invalid arguments for constructor
+
+    var routeEntry4 = new RouteEntry(null, false, '');
+
+    ok(_.isUndefined(routeEntry4.pattern()), 'routeEntry4.pattern() must be undefined');
+    ok(_.isUndefined(routeEntry4.callback()), 'routeEntry4.callback() must be undefined');
+    ok(_.isUndefined(routeEntry4.conditions()), 'routeEntry4.conditions() must be undefined');
 
 
 

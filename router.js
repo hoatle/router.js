@@ -50,11 +50,17 @@
   }
 
   var RouteEntry = function(pattern, callback, conditions) {
-    //TODO pre-check
+    if (_.isString(pattern)) {
+      this._pattern = pattern;
+    }
 
-    this._pattern = pattern;
-    this._callback = callback;
-    this._conditions = conditions;
+    if (_.isFunction(callback)) {
+      this._callback = callback;
+    }
+
+    if (_.isObject(conditions)) {
+      this._conditions = conditions;
+    }
 
   };
 
