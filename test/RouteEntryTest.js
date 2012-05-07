@@ -71,6 +71,13 @@ $(document).ready(function() {
     equal(routeEntry2.callback(), callback2, 'routeEntry2.callback() must be ' + callback2);
     equal(routeEntry2.conditions(), conditions2, 'routeEntry2.conditions() must be ' + conditions2);
 
+    var routeEntry3 = new RouteEntry().pattern(pattern2).callback(callback2).conditions(conditions2);
+
+    equal(routeEntry3.pattern(), pattern2, 'routeEntry3.pattern() must be ' + pattern2);
+    equal(routeEntry3.callback(), callback2, 'routeEntry3.callback() must be ' + callback2);
+    equal(routeEntry3.conditions(), conditions2, 'routeEntry3.conditions() must be ' + conditions2);
+
+
 
   });
 
