@@ -12,7 +12,7 @@ $(document).ready(function() {
 
     equal(routeEntry.pattern(), undefined, 'routeEntry.pattern() must be undefined');
     equal(routeEntry.callback(), undefined, 'routeEntry.callback() must be undefined');
-    equal(routeEntry.conditions(), undefined, 'routeEntry.conditions() must be undefined');
+    equal(routeEntry.constraints(), undefined, 'routeEntry.constraints() must be undefined');
 
     //sets
 
@@ -32,11 +32,11 @@ $(document).ready(function() {
 
     routeEntry.pattern(pattern);
     routeEntry.callback(callback);
-    routeEntry.conditions(conditions);
+    routeEntry.constraints(conditions);
 
     equal(routeEntry.pattern(), pattern, 'routeEntry.pattern() must be ' + pattern);
     equal(routeEntry.callback(), callback, 'routeEntry.callback() must be ' + callback);
-    equal(routeEntry.conditions(), conditions, 'routeEntry.conditions() must be ' + conditions);
+    equal(routeEntry.constraints(), conditions, 'routeEntry.constraints() must be ' + conditions);
 
     equal(routeEntry.callback()(), ':foo-:bar-call-backed', 'routeEntry.callback()() must return: \':foo-:bar-call-backed\'');
 
@@ -47,7 +47,7 @@ $(document).ready(function() {
 
     equal(routeEntry2.pattern(null), pattern, 'routeEntry2.pattern() must be: ' + pattern);
     equal(routeEntry2.callback(undefined), callback, 'routeEntry2.callback() must be: ' + callback);
-    equal(routeEntry2.conditions(false), conditions, 'routeEntry2.conditions() must be: ' + conditions);
+    equal(routeEntry2.constraints(false), conditions, 'routeEntry2.constraints() must be: ' + conditions);
 
     var pattern2 = '/:foo/:bar2',
       callback2 = function() {
@@ -65,17 +65,17 @@ $(document).ready(function() {
 
     //chaining
 
-    routeEntry2.pattern(pattern2).callback(callback2).conditions(conditions2);
+    routeEntry2.pattern(pattern2).callback(callback2).constraints(conditions2);
 
     equal(routeEntry2.pattern(), pattern2, 'routeEntry2.pattern() must be ' + pattern2);
     equal(routeEntry2.callback(), callback2, 'routeEntry2.callback() must be ' + callback2);
-    equal(routeEntry2.conditions(), conditions2, 'routeEntry2.conditions() must be ' + conditions2);
+    equal(routeEntry2.constraints(), conditions2, 'routeEntry2.constraints() must be ' + conditions2);
 
-    var routeEntry3 = new RouteEntry().pattern(pattern2).callback(callback2).conditions(conditions2);
+    var routeEntry3 = new RouteEntry().pattern(pattern2).callback(callback2).constraints(conditions2);
 
     equal(routeEntry3.pattern(), pattern2, 'routeEntry3.pattern() must be ' + pattern2);
     equal(routeEntry3.callback(), callback2, 'routeEntry3.callback() must be ' + callback2);
-    equal(routeEntry3.conditions(), conditions2, 'routeEntry3.conditions() must be ' + conditions2);
+    equal(routeEntry3.constraints(), conditions2, 'routeEntry3.constraints() must be ' + conditions2);
 
 
 
@@ -85,7 +85,7 @@ $(document).ready(function() {
 
     ok(_.isUndefined(routeEntry4.pattern()), 'routeEntry4.pattern() must be undefined');
     ok(_.isUndefined(routeEntry4.callback()), 'routeEntry4.callback() must be undefined');
-    ok(_.isUndefined(routeEntry4.conditions()), 'routeEntry4.conditions() must be undefined');
+    ok(_.isUndefined(routeEntry4.constraints()), 'routeEntry4.constraints() must be undefined');
 
   });
 
@@ -105,7 +105,7 @@ $(document).ready(function() {
 
     ok(routeEntry.isValid(), 'routeEntry.isValid must return true');
 
-    routeEntry.conditions({
+    routeEntry.constraints({
       foo: [
         'test'
       ],
@@ -118,13 +118,17 @@ $(document).ready(function() {
 
   });
 
-  test('RouteEntry#isMatch', function() {
+  test('RouteEntry#isMatched', function() {
     var routeEntry = new RouteEntry();
-    ok(!routeEntry.isMatch('pattern/value'), 'routeEntry.isMatch(\'pattern/value\') must return false');
+    ok(!routeEntry.isMatched('pattern/value'), 'routeEntry.isMatched(\'pattern/value\') must return false');
 
     routeEntry.pattern('/foo/bar');
 
-    ok(routeEntry.isMatch('/foo/bar'), 'routeEntry.isMatch(\'/foo/bar\') must return true');
+    ok(routeEntry.isMatched('/foo/bar'), 'routeEntry.isMatched(\'/foo/bar\') must return true');
+
+    routeEntry.pattern('/:para1/:param2');
+
+    ok(routeEntry.isMatched('/fooParam/barParam'), 'routeEntry.isMatched(\'/fooParam/barParam\') must return true');
 
   });
 
