@@ -17,6 +17,32 @@ $(document).ready(function() {
   });
 
 
+  test('router#config', function() {
+
+    ok(_.isFunction(router.config), 'router.config must be a function');
+
+    //default config
+    var defaultConfig = {
+      caseSensitivePath: true
+    };
+
+    deepEqual(router.config(), defaultConfig, 'router.config() must return: ' + defaultConfig);
+
+    var newConfig = {
+      caseSensitivePath: false,
+      invalid: false
+    };
+
+    var newExpectedConfig = {
+      caseSensitivePath: false
+    };
+
+    router.config(newConfig);
+
+    deepEqual(router.config(), newExpectedConfig, 'router.config() must return: ' + newExpectedConfig);
+
+  });
+
 
   test('router#map', function() {
 
