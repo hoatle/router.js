@@ -144,6 +144,11 @@
 
   });
 
+  // default configurations
+  var configs  = {
+    caseSensitivePath: true
+  };
+
   //the router object
   var router = {
     // properties
@@ -153,13 +158,16 @@
     RouteEntry: RouteEntry,
 
     /**
-     * Configures the router's behavior instead of default's one.
+     * Gets the router's behavior or override the router's default behavior.
      *
-     * @param configs the literal configuration object
+     * @param newConfigs the literal configuration object
      */
-    config: function(configs) {
-      //TODO implement
-
+    config: function(newConfigs) {
+      if (_.isObject(newConfigs)) {
+        configs = _.pick(_.defaults(newConfigs, configs), 'caseSensitivePath');
+        return this;
+      }
+      return configs;
     },
 
     /**
