@@ -49,6 +49,12 @@
     _ = require('underscore');
   }
 
+  // Cached regular expressions for matching named param parts (:nameParamPath) and splatted
+  // parts (*splattedPath) of pattern string.
+  var namedParam    = /:\w+/g;
+  var splatParam    = /\*\w+/g;
+  var escapeRegExp  = /[-[\]{}()+?.,\\^$|#\s]/g;
+
   var RouteEntry = function(pattern, callback, constraints) {
     if (_.isString(pattern) || _.isRegExp(pattern)) {
       this._pattern = pattern;
@@ -61,6 +67,9 @@
     if (_.isObject(constraints)) {
       this._constraints = constraints;
     }
+
+    //cached and lazy-loaded
+    this._regExp = null;
 
   };
 
@@ -76,6 +85,8 @@
     pattern: function(newPattern) {
       if (_.isString(newPattern) || _.isRegExp(newPattern)) {
         this._pattern = newPattern;
+        //clear cached
+        this._regExp = null;
         return this;
       }
       return this._pattern;
@@ -101,6 +112,8 @@
     constraints: function(newConstraints) {
       if (_.isObject(newConstraints)) {
         this._constraints = newConstraints;
+        //clear cached
+        this._regExp = null;
         return this;
       }
       return this._constraints;
@@ -110,7 +123,7 @@
      * Checks if the route entry is valid: has required valid pattern + callback.
      */
     isValid: function() {
-      return _.isString(this._pattern) && _.isFunction(this._callback);
+      return (_.isString(this._pattern) || _.isRegExp(this._pattern)) && _.isFunction(this._callback);
     },
 
     /**
@@ -119,7 +132,7 @@
      * @param patternValue
      */
     isMatched: function(patternValue) {
-      return this._pattern && patternValue &&  patternValue.match(this._pattern);
+      return this.isValid() ? this.toRegExp().test(patternValue) : false;
     },
 
     /**
@@ -140,6 +153,25 @@
      */
     url: function(params, extraParamIncluded) {
       //TODO implement
+    },
+
+    /**
+     * Converts the pattern and constraints if any to regular expression.
+     */
+    toRegExp: function() {
+      if (this._regExp) {
+        return this._regExp;
+      }
+      if (_.isString(this._pattern)) {
+        var route = this._pattern;
+        route = route.replace(escapeRegExp, '\\$&')
+                     .replace(namedParam, '([^\/]+)')
+                     .replace(splatParam, '(.*?)');
+        return this._regExp = RegExp('^' + route + '$');
+      } else if (_.isRegExp(this._pattern)) {
+        return this._regExp = this._pattern;
+      }
+      return new RegExp();
     }
 
   });

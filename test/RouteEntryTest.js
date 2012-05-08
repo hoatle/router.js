@@ -8,7 +8,7 @@ $(document).ready(function() {
 
   test('RouteEntry basic', function() {
 
-    expect(7);
+    expect(8);
 
     ok(RouteEntry.prototype.pattern, 'RouteEntry.prototype.pattern must be available');
     ok(RouteEntry.prototype.callback, 'RouteEntry.prototype.callback must be available');
@@ -17,6 +17,7 @@ $(document).ready(function() {
     ok(RouteEntry.prototype.isMatched, 'RouteEntry.prototype.isMatched must be available');
     ok(RouteEntry.prototype.dispatch, 'RouteEntry.prototype.dispatch must be available');
     ok(RouteEntry.prototype.url, 'RouteEntry.prototype.url must be available');
+    ok(RouteEntry.prototype.toRegExp, 'RouteEntry.prototype.toRegExp must be available');
 
   });
 
@@ -142,12 +143,16 @@ $(document).ready(function() {
 
   test('RouteEntry#isMatched', function() {
     var routeEntry = new RouteEntry();
+    routeEntry.callback(function() {
+
+    }); //for valid
+
     ok(!routeEntry.isMatched('pattern/value'), 'routeEntry.isMatched(\'pattern/value\') must return false');
 
     routeEntry.pattern('/foo/bar');
 
-    ok(routeEntry.isMatched('/foo/bar'), 'routeEntry.isMatched(\'/foo/bar\') must return true');
 
+    ok(routeEntry.isMatched('/foo/bar'), 'routeEntry.isMatched(\'/foo/bar\') must return true');
 
 
     routeEntry.pattern('/:para1/:param2');
@@ -155,5 +160,38 @@ $(document).ready(function() {
     ok(routeEntry.isMatched('/fooParam/barParam'), 'routeEntry.isMatched(\'/fooParam/barParam\') must return true');
 
   });
+
+  test('RouteEntry#dispatch', function() {
+
+    ok(true);
+
+  });
+
+
+  test('RouteEntry#url', function() {
+    ok(true)
+  });
+
+
+  test('RouteEntry#toRegExp', function() {
+
+    var routeEntry = new RouteEntry();
+
+    ok(_.isRegExp(routeEntry.toRegExp()), 'routeEntry.toRegExp() must return a regular expression');
+
+    equal(routeEntry.toRegExp().toString(), '/(?:)/', 'routeEntry.toRegExp().toString() must return: \'/(?:)/\'');
+
+
+    routeEntry.pattern('/foo/bar');
+
+    equal(routeEntry.toRegExp().toString(), '/^/foo/bar$/', 'routeEntry.toRegExp().toString() must return: \'/^/foo/bar$/\'');
+
+    routeEntry.pattern('/:foo/:bar');
+
+    equal(routeEntry.toRegExp().toString(), '/^/([^/]+)/([^/]+)$/', 'routeEntry.toRegExp().toString() must return: \'/^/([^/]+)/([^/]+)$/\'');
+
+  });
+
+
 
 });
