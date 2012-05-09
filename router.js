@@ -167,7 +167,7 @@
         route = route.replace(escapeRegExp, '\\$&')
                      .replace(namedParam, '([^\/]+)')
                      .replace(splatParam, '(.*?)');
-        return this._regExp = RegExp('^' + route + '$');
+        return this._regExp = new RegExp('^' + route + '$');
       } else if (_.isRegExp(this._pattern)) {
         return this._regExp = this._pattern;
       }

@@ -190,6 +190,10 @@ $(document).ready(function() {
 
     equal(routeEntry.toRegExp().toString(), '/^/([^/]+)/([^/]+)$/', 'routeEntry.toRegExp().toString() must return: \'/^/([^/]+)/([^/]+)$/\'');
 
+    routeEntry.pattern('/:foo/p:pageNumber');
+
+    equal(routeEntry.toRegExp().toString(), '/^/([^/]+)/p([^/]+)$/', 'routeEntry.toRegExp().toString() must return: \'/^/([^/]+)/p([^/]+)$/\'');
+
   });
 
 
