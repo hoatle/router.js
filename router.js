@@ -60,19 +60,21 @@
 
   var RouteEntry = function(pattern, callback, constraints) {
     if (_.isString(pattern) || _.isRegExp(pattern)) {
-      this._pattern = pattern;
+      this.pattern(pattern);
     }
 
     if (_.isFunction(callback)) {
-      this._callback = callback;
+      this.callback(callback);
     }
 
     if (_.isObject(constraints)) {
-      this._constraints = constraints;
+      this.constraints(constraints);
     }
 
     //cached and lazy-loaded
     this._regExp = null;
+    //normalizedConstraints: {namedParam: regExpString}
+    this._normalizedConstraints = null;
 
   };
 
@@ -114,9 +116,25 @@
      */
     constraints: function(newConstraints) {
       if (_.isObject(newConstraints)) {
-        this._constraints = newConstraints;
         //clear cached
         this._regExp = null;
+        this._constraints = newConstraints;
+
+        //normalize constraints
+        var normalizedConstraints = _.clone(newConstraints);
+
+        _.each(normalizedConstraints, function(value, key) {
+          _.each(value, function(element, index) {
+            if (_.isRegExp(element)) {
+              var regExpStr = element.toString();
+              value.splice(index, 1, regExpStr.substr(1, regExpStr.length - 2));
+            }
+          });
+          if (value.length > 1) {
+            normalizedConstraints[key] = '(' + value.join('|') + ')';
+          }
+        });
+        this._normalizedConstraints = normalizedConstraints;
         return this;
       }
       return this._constraints;
@@ -194,23 +212,8 @@
 
       var namedParam = namedParamMatch.substr(1, namedParamMatch.length);
 
-      var constraints = this.constraints();
-
-      if (constraints) {
-        _.each(constraints, function(arr, key) {
-
-          _.each(arr, function(element, index) {
-            if (_.isRegExp(element)) {
-              var regExpStr = element.toString();
-              arr.splice(index, 1, regExpStr.substr(1, regExpStr.length - 2));
-            }
-          });
-
-        });
-      }
-
-      if (constraints && constraints[namedParam]) {
-        return '(' + constraints[namedParam].join('|') + ')';
+      if (this._normalizedConstraints && this._normalizedConstraints[namedParam]) {
+        return this._normalizedConstraints[namedParam];
       }
 
       return defaultNamedParamRegExp;
