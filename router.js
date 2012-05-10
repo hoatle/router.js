@@ -42,18 +42,21 @@
   // save the previous router object
   var previousRouter = root.router;
 
-  // Require Underscore, if we're on the server, and it's not already present.
+  // Requires Underscore, if we're on the server, and it's not already present.
   var _ = root._;
 
   if (!_ && (typeof require !== 'undefined')) {
     _ = require('underscore');
   }
 
-  // Cached regular expressions for matching named param parts (:nameParamPath) and splatted
-  // parts (*splattedPath) of pattern string.
+  // cached regular expressions for matching named param parts (:nameParamPath) and
+  // splatted parts (*splattedPath) of pattern string.
+
   var namedParam    = /:\w+/g;
   var splatParam    = /\*\w+/g;
   var escapeRegExp  = /[-[\]{}()+?.,\\^$|#\s]/g;
+
+  var defaultNamedParamRegExp = '([^\/]+)';
 
   var RouteEntry = function(pattern, callback, constraints) {
     if (_.isString(pattern) || _.isRegExp(pattern)) {
@@ -85,7 +88,7 @@
     pattern: function(newPattern) {
       if (_.isString(newPattern) || _.isRegExp(newPattern)) {
         this._pattern = newPattern;
-        //clear cached
+        //clear cache
         this._regExp = null;
         return this;
       }
@@ -165,14 +168,55 @@
       if (_.isString(this._pattern)) {
         var route = this._pattern;
         route = route.replace(escapeRegExp, '\\$&')
-                     .replace(namedParam, '([^\/]+)')
                      .replace(splatParam, '(.*?)');
+
+        var namedParamMatch;
+        while (namedParamMatch = namedParam.exec(route)) {
+          route = route.replace(namedParamMatch[0], this._getConstraintsRegExp(namedParamMatch[0]));
+        }
+
         return this._regExp = new RegExp('^' + route + '$');
       } else if (_.isRegExp(this._pattern)) {
         return this._regExp = this._pattern;
       }
       return new RegExp();
+    },
+
+    //private methods
+
+    /**
+     * Gets constraints regular expression for a namedParamMatch.
+     *
+     * @param namedParamMatch the namedParamMatch with format: [:nameParam].
+     * @private
+     */
+    _getConstraintsRegExp: function(namedParamMatch) {
+
+      var namedParam = namedParamMatch.substr(1, namedParamMatch.length);
+
+      var constraints = this.constraints();
+
+      if (constraints) {
+        _.each(constraints, function(arr, key) {
+
+          _.each(arr, function(element, index) {
+            if (_.isRegExp(element)) {
+              var regExpStr = element.toString();
+              arr.splice(index, 1, regExpStr.substr(1, regExpStr.length - 2));
+            }
+          });
+
+        });
+      }
+
+      if (constraints && constraints[namedParam]) {
+        return '(' + constraints[namedParam].join('|') + ')';
+      }
+
+      return defaultNamedParamRegExp;
     }
+
+
 
   });
 

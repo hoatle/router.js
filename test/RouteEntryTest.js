@@ -179,24 +179,27 @@ $(document).ready(function() {
 
     ok(_.isRegExp(routeEntry.toRegExp()), 'routeEntry.toRegExp() must return a regular expression');
 
-    equal(routeEntry.toRegExp().toString(), '/(?:)/', 'routeEntry.toRegExp().toString() must return: \'/(?:)/\'');
+    ok(_.isEqual(routeEntry.toRegExp(), new RegExp()), 'routeEntry.toRegExp() must be an empty regExp');
 
 
     routeEntry.pattern('/foo/bar');
 
-    equal(routeEntry.toRegExp().toString(), '/^/foo/bar$/', 'routeEntry.toRegExp().toString() must return: \'/^/foo/bar$/\'');
+    ok(_.isEqual(routeEntry.toRegExp(), new RegExp('^/foo/bar$')), 'routeEntry.toRegExp() must be: /^/foo/bar$/');
 
     routeEntry.pattern('/:foo/:bar');
 
-    equal(routeEntry.toRegExp().toString(), '/^/([^/]+)/([^/]+)$/', 'routeEntry.toRegExp().toString() must return: \'/^/([^/]+)/([^/]+)$/\'');
+    ok(_.isEqual(routeEntry.toRegExp(), new RegExp('^/([^/]+)/([^/]+)$')), 'routeEntry.toRegExp() must return: /^/([^/]+)/([^/]+)$/');
+
 
     routeEntry.pattern('/:foo/p:pageNumber');
 
-    equal(routeEntry.toRegExp().toString(), '/^/([^/]+)/p([^/]+)$/', 'routeEntry.toRegExp().toString() must return: \'/^/([^/]+)/p([^/]+)$/\'');
+    ok(_.isEqual(routeEntry.toRegExp(), new RegExp('^/([^/]+)/p([^/]+)$')), 'routeEntry.toRegExp() must return: /^/([^/]+)/p([^/]+)$/');
+
 
     var pattern1 = /^foo\/bar\/$/i;
 
     routeEntry.pattern(pattern1);
+
     equal(routeEntry.toRegExp(), pattern1, 'routeEntry.toRegExp() must return: ' + pattern1);
 
     var pattern2 = new RegExp('^hello/world$', 'i');
@@ -205,7 +208,9 @@ $(document).ready(function() {
     equal(routeEntry.toRegExp(), pattern2, 'routeEntry.toRegExp() must return: ' + pattern2);
 
     routeEntry.pattern('/download/*filePath');
-    equal(routeEntry.toRegExp().toString(), '/^/download/(.*?)$/', 'routeEntry.toRegExp().toString() must return: \'/^/download/(.*?)$/\'');
+
+    ok(_.isEqual(routeEntry.toRegExp(), new RegExp('^/download/(.*?)$')), 'routeEntry.toRegExp() must return: /^/download/(.*?)$/');
+
 
     //add pattern with constraints
 
@@ -217,8 +222,12 @@ $(document).ready(function() {
                 ]
               });
 
-    equal(routeEntry.toRegExp().toString(), '/^/users/(me|\d+)$/', 'routeEntry.toRegExp().toString() must return: \'/^/users/(me|\d+)$/\'');
+    var expectedConstraintRegExp = new RegExp('^/users/(me|\\d+)$');
 
+    ok(_.isEqual(routeEntry.toRegExp(), expectedConstraintRegExp), 'routeEntry.toRegExp() must return: /^/users/(me|\\d+)$/');
+
+    ok(routeEntry.toRegExp().test('/users/me'), 'must match /users/me');
+    ok(routeEntry.toRegExp().test('/users/123'), 'must match /users/123');
   });
 
 
