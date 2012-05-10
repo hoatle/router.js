@@ -4,26 +4,26 @@
 $(document).ready(function() {
   module('router::core');
 
-  var RouteEntry = router.RouteEntry;
+  var Route = router.Route;
 
-  test('RouteEntry basic', function() {
+  test('Route basic', function() {
 
     expect(8);
 
-    ok(RouteEntry.prototype.pattern, 'RouteEntry.prototype.pattern must be available');
-    ok(RouteEntry.prototype.callback, 'RouteEntry.prototype.callback must be available');
-    ok(RouteEntry.prototype.constraints, 'RouteEntry.prototype.constraints must be available');
-    ok(RouteEntry.prototype.isValid, 'RouteEntry.prototype.isValid must be available');
-    ok(RouteEntry.prototype.isMatched, 'RouteEntry.prototype.isMatched must be available');
-    ok(RouteEntry.prototype.dispatch, 'RouteEntry.prototype.dispatch must be available');
-    ok(RouteEntry.prototype.url, 'RouteEntry.prototype.url must be available');
-    ok(RouteEntry.prototype.toRegExp, 'RouteEntry.prototype.toRegExp must be available');
+    ok(Route.prototype.pattern, 'Route.prototype.pattern must be available');
+    ok(Route.prototype.callback, 'Route.prototype.callback must be available');
+    ok(Route.prototype.constraints, 'Route.prototype.constraints must be available');
+    ok(Route.prototype.isValid, 'Route.prototype.isValid must be available');
+    ok(Route.prototype.isMatched, 'Route.prototype.isMatched must be available');
+    ok(Route.prototype.dispatch, 'Route.prototype.dispatch must be available');
+    ok(Route.prototype.url, 'Route.prototype.url must be available');
+    ok(Route.prototype.toRegExp, 'Route.prototype.toRegExp must be available');
 
   });
 
 
-  test('RouteEntry instance', function() {
-    var routeEntry = new RouteEntry();
+  test('Route instance', function() {
+    var routeEntry = new Route();
     ok(_.isObject(routeEntry), 'routeEntry must be an object');
 
     equal(routeEntry.pattern(), undefined, 'routeEntry.pattern() must be undefined');
@@ -59,7 +59,7 @@ $(document).ready(function() {
 
     //use constructor, then update
 
-    var routeEntry2 = new RouteEntry(pattern, callback, conditions);
+    var routeEntry2 = new Route(pattern, callback, conditions);
 
     equal(routeEntry2.pattern(null), pattern, 'routeEntry2.pattern() must be: ' + pattern);
     equal(routeEntry2.callback(undefined), callback, 'routeEntry2.callback() must be: ' + callback);
@@ -87,7 +87,7 @@ $(document).ready(function() {
     equal(routeEntry2.callback(), callback2, 'routeEntry2.callback() must be ' + callback2);
     equal(routeEntry2.constraints(), conditions2, 'routeEntry2.constraints() must be ' + conditions2);
 
-    var routeEntry3 = new RouteEntry().pattern(pattern2).callback(callback2).constraints(conditions2);
+    var routeEntry3 = new Route().pattern(pattern2).callback(callback2).constraints(conditions2);
 
     equal(routeEntry3.pattern(), pattern2, 'routeEntry3.pattern() must be ' + pattern2);
     equal(routeEntry3.callback(), callback2, 'routeEntry3.callback() must be ' + callback2);
@@ -97,7 +97,7 @@ $(document).ready(function() {
 
     //invalid arguments for constructor
 
-    var routeEntry4 = new RouteEntry(null, false, '');
+    var routeEntry4 = new Route(null, false, '');
 
     ok(_.isUndefined(routeEntry4.pattern()), 'routeEntry4.pattern() must be undefined');
     ok(_.isUndefined(routeEntry4.callback()), 'routeEntry4.callback() must be undefined');
@@ -112,9 +112,9 @@ $(document).ready(function() {
 
   });
 
-  test('RouteEntry#isValid', function() {
+  test('Route#isValid', function() {
 
-    var routeEntry = new RouteEntry();
+    var routeEntry = new Route();
 
     ok(!routeEntry.isValid(), 'routeEntry.isValid() must return false');
 
@@ -141,8 +141,8 @@ $(document).ready(function() {
 
   });
 
-  test('RouteEntry#isMatched', function() {
-    var routeEntry = new RouteEntry();
+  test('Route#isMatched', function() {
+    var routeEntry = new Route();
     routeEntry.callback(function() {
 
     }); //for valid
@@ -161,21 +161,21 @@ $(document).ready(function() {
 
   });
 
-  test('RouteEntry#dispatch', function() {
+  test('Route#dispatch', function() {
 
     ok(true);
 
   });
 
 
-  test('RouteEntry#url', function() {
+  test('Route#url', function() {
     ok(true)
   });
 
 
-  test('RouteEntry#toRegExp', function() {
+  test('Route#toRegExp', function() {
 
-    var routeEntry = new RouteEntry();
+    var routeEntry = new Route();
 
     ok(_.isRegExp(routeEntry.toRegExp()), 'routeEntry.toRegExp() must return a regular expression');
 
