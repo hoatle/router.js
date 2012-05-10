@@ -42,34 +42,39 @@
   // save the previous router object
   var previousRouter = root.router;
 
-  // Require Underscore, if we're on the server, and it's not already present.
+  // Requires Underscore, if we're on the server, and it's not already present.
   var _ = root._;
 
   if (!_ && (typeof require !== 'undefined')) {
     _ = require('underscore');
   }
 
-  // Cached regular expressions for matching named param parts (:nameParamPath) and splatted
-  // parts (*splattedPath) of pattern string.
+  // cached regular expressions for matching named param parts (:nameParamPath) and
+  // splatted parts (*splattedPath) of pattern string.
+
   var namedParam    = /:\w+/g;
   var splatParam    = /\*\w+/g;
   var escapeRegExp  = /[-[\]{}()+?.,\\^$|#\s]/g;
 
+  var defaultNamedParamRegExp = '([^\/]+)';
+
   var RouteEntry = function(pattern, callback, constraints) {
     if (_.isString(pattern) || _.isRegExp(pattern)) {
-      this._pattern = pattern;
+      this.pattern(pattern);
     }
 
     if (_.isFunction(callback)) {
-      this._callback = callback;
+      this.callback(callback);
     }
 
     if (_.isObject(constraints)) {
-      this._constraints = constraints;
+      this.constraints(constraints);
     }
 
     //cached and lazy-loaded
     this._regExp = null;
+    //normalizedConstraints: {namedParam: regExpString}
+    this._normalizedConstraints = null;
 
   };
 
@@ -85,7 +90,7 @@
     pattern: function(newPattern) {
       if (_.isString(newPattern) || _.isRegExp(newPattern)) {
         this._pattern = newPattern;
-        //clear cached
+        //clear cache
         this._regExp = null;
         return this;
       }
@@ -111,9 +116,25 @@
      */
     constraints: function(newConstraints) {
       if (_.isObject(newConstraints)) {
-        this._constraints = newConstraints;
         //clear cached
         this._regExp = null;
+        this._constraints = newConstraints;
+
+        //normalize constraints
+        var normalizedConstraints = _.clone(newConstraints);
+
+        _.each(normalizedConstraints, function(value, key) {
+          _.each(value, function(element, index) {
+            if (_.isRegExp(element)) {
+              var regExpStr = element.toString();
+              value.splice(index, 1, regExpStr.substr(1, regExpStr.length - 2));
+            }
+          });
+          if (value.length > 1) {
+            normalizedConstraints[key] = '(' + value.join('|') + ')';
+          }
+        });
+        this._normalizedConstraints = normalizedConstraints;
         return this;
       }
       return this._constraints;
@@ -165,14 +186,40 @@
       if (_.isString(this._pattern)) {
         var route = this._pattern;
         route = route.replace(escapeRegExp, '\\$&')
-                     .replace(namedParam, '([^\/]+)')
                      .replace(splatParam, '(.*?)');
+
+        var namedParamMatch;
+        while (namedParamMatch = namedParam.exec(route)) {
+          route = route.replace(namedParamMatch[0], this._getConstraintsRegExp(namedParamMatch[0]));
+        }
+
         return this._regExp = new RegExp('^' + route + '$');
       } else if (_.isRegExp(this._pattern)) {
         return this._regExp = this._pattern;
       }
       return new RegExp();
+    },
+
+    //private methods
+
+    /**
+     * Gets constraints regular expression for a namedParamMatch.
+     *
+     * @param namedParamMatch the namedParamMatch with format: [:nameParam].
+     * @private
+     */
+    _getConstraintsRegExp: function(namedParamMatch) {
+
+      var namedParam = namedParamMatch.substr(1, namedParamMatch.length);
+
+      if (this._normalizedConstraints && this._normalizedConstraints[namedParam]) {
+        return this._normalizedConstraints[namedParam];
+      }
+
+      return defaultNamedParamRegExp;
     }
+
+
 
   });
 
