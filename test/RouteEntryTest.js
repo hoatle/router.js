@@ -207,6 +207,18 @@ $(document).ready(function() {
     routeEntry.pattern('/download/*filePath');
     equal(routeEntry.toRegExp().toString(), '/^/download/(.*?)$/', 'routeEntry.toRegExp().toString() must return: \'/^/download/(.*?)$/\'');
 
+    //add pattern with constraints
+
+    routeEntry.pattern('/users/:userId')
+              .constraints({
+                userId: [
+                  'me',
+                  /\d+/
+                ]
+              });
+
+    equal(routeEntry.toRegExp().toString(), '/^/users/(me|\d+)$/', 'routeEntry.toRegExp().toString() must return: \'/^/users/(me|\d+)$/\'');
+
   });
 
 
