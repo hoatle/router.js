@@ -190,6 +190,23 @@ $(document).ready(function() {
 
     equal(routeEntry.toRegExp().toString(), '/^/([^/]+)/([^/]+)$/', 'routeEntry.toRegExp().toString() must return: \'/^/([^/]+)/([^/]+)$/\'');
 
+    routeEntry.pattern('/:foo/p:pageNumber');
+
+    equal(routeEntry.toRegExp().toString(), '/^/([^/]+)/p([^/]+)$/', 'routeEntry.toRegExp().toString() must return: \'/^/([^/]+)/p([^/]+)$/\'');
+
+    var pattern1 = /^foo\/bar\/$/i;
+
+    routeEntry.pattern(pattern1);
+    equal(routeEntry.toRegExp(), pattern1, 'routeEntry.toRegExp() must return: ' + pattern1);
+
+    var pattern2 = new RegExp('^hello/world$', 'i');
+
+    routeEntry.pattern(pattern2);
+    equal(routeEntry.toRegExp(), pattern2, 'routeEntry.toRegExp() must return: ' + pattern2);
+
+    routeEntry.pattern('/download/*filePath');
+    equal(routeEntry.toRegExp().toString(), '/^/download/(.*?)$/', 'routeEntry.toRegExp().toString() must return: \'/^/download/(.*?)$/\'');
+
   });
 
 
