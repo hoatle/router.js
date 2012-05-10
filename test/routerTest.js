@@ -12,7 +12,7 @@ $(document).ready(function() {
   test('router::properties', function() {
     equal(router.VERSION, '0.1.0', 'router.VERSION must be 0.1.0');
 
-    ok(_.isFunction(router.Route), 'router.RouteEntry must be a function');
+    ok(_.isFunction(router.Route), 'router.Route must be a function');
 
   });
 

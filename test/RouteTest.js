@@ -1,5 +1,5 @@
 /**
- * Unit test for router.RouteEntry.
+ * Unit test for router.Route.
  */
 $(document).ready(function() {
   module('router::core');
@@ -23,12 +23,12 @@ $(document).ready(function() {
 
 
   test('Route instance', function() {
-    var routeEntry = new Route();
-    ok(_.isObject(routeEntry), 'routeEntry must be an object');
+    var route = new Route();
+    ok(_.isObject(route), 'route must be an object');
 
-    equal(routeEntry.pattern(), undefined, 'routeEntry.pattern() must be undefined');
-    equal(routeEntry.callback(), undefined, 'routeEntry.callback() must be undefined');
-    equal(routeEntry.constraints(), undefined, 'routeEntry.constraints() must be undefined');
+    equal(route.pattern(), undefined, 'route.pattern() must be undefined');
+    equal(route.callback(), undefined, 'route.callback() must be undefined');
+    equal(route.constraints(), undefined, 'route.constraints() must be undefined');
 
     //sets
 
@@ -46,24 +46,24 @@ $(document).ready(function() {
           ]
         };
 
-    routeEntry.pattern(pattern);
-    routeEntry.callback(callback);
-    routeEntry.constraints(conditions);
+    route.pattern(pattern);
+    route.callback(callback);
+    route.constraints(conditions);
 
-    equal(routeEntry.pattern(), pattern, 'routeEntry.pattern() must be ' + pattern);
-    equal(routeEntry.callback(), callback, 'routeEntry.callback() must be ' + callback);
-    equal(routeEntry.constraints(), conditions, 'routeEntry.constraints() must be ' + conditions);
+    equal(route.pattern(), pattern, 'route.pattern() must be ' + pattern);
+    equal(route.callback(), callback, 'route.callback() must be ' + callback);
+    equal(route.constraints(), conditions, 'route.constraints() must be ' + conditions);
 
-    equal(routeEntry.callback()(), ':foo-:bar-call-backed', 'routeEntry.callback()() must return: \':foo-:bar-call-backed\'');
+    equal(route.callback()(), ':foo-:bar-call-backed', 'route.callback()() must return: \':foo-:bar-call-backed\'');
 
 
     //use constructor, then update
 
-    var routeEntry2 = new Route(pattern, callback, conditions);
+    var route2 = new Route(pattern, callback, conditions);
 
-    equal(routeEntry2.pattern(null), pattern, 'routeEntry2.pattern() must be: ' + pattern);
-    equal(routeEntry2.callback(undefined), callback, 'routeEntry2.callback() must be: ' + callback);
-    equal(routeEntry2.constraints(false), conditions, 'routeEntry2.constraints() must be: ' + conditions);
+    equal(route2.pattern(null), pattern, 'route2.pattern() must be: ' + pattern);
+    equal(route2.callback(undefined), callback, 'route2.callback() must be: ' + callback);
+    equal(route2.constraints(false), conditions, 'route2.constraints() must be: ' + conditions);
 
     var pattern2 = '/:foo/:bar2',
       callback2 = function() {
@@ -81,54 +81,54 @@ $(document).ready(function() {
 
     //chaining
 
-    routeEntry2.pattern(pattern2).callback(callback2).constraints(conditions2);
+    route2.pattern(pattern2).callback(callback2).constraints(conditions2);
 
-    equal(routeEntry2.pattern(), pattern2, 'routeEntry2.pattern() must be ' + pattern2);
-    equal(routeEntry2.callback(), callback2, 'routeEntry2.callback() must be ' + callback2);
-    equal(routeEntry2.constraints(), conditions2, 'routeEntry2.constraints() must be ' + conditions2);
+    equal(route2.pattern(), pattern2, 'route2.pattern() must be ' + pattern2);
+    equal(route2.callback(), callback2, 'route2.callback() must be ' + callback2);
+    equal(route2.constraints(), conditions2, 'route2.constraints() must be ' + conditions2);
 
-    var routeEntry3 = new Route().pattern(pattern2).callback(callback2).constraints(conditions2);
+    var route3 = new Route().pattern(pattern2).callback(callback2).constraints(conditions2);
 
-    equal(routeEntry3.pattern(), pattern2, 'routeEntry3.pattern() must be ' + pattern2);
-    equal(routeEntry3.callback(), callback2, 'routeEntry3.callback() must be ' + callback2);
-    equal(routeEntry3.constraints(), conditions2, 'routeEntry3.constraints() must be ' + conditions2);
+    equal(route3.pattern(), pattern2, 'route3.pattern() must be ' + pattern2);
+    equal(route3.callback(), callback2, 'route3.callback() must be ' + callback2);
+    equal(route3.constraints(), conditions2, 'route3.constraints() must be ' + conditions2);
 
 
 
     //invalid arguments for constructor
 
-    var routeEntry4 = new Route(null, false, '');
+    var route4 = new Route(null, false, '');
 
-    ok(_.isUndefined(routeEntry4.pattern()), 'routeEntry4.pattern() must be undefined');
-    ok(_.isUndefined(routeEntry4.callback()), 'routeEntry4.callback() must be undefined');
-    ok(_.isUndefined(routeEntry4.constraints()), 'routeEntry4.constraints() must be undefined');
+    ok(_.isUndefined(route4.pattern()), 'route4.pattern() must be undefined');
+    ok(_.isUndefined(route4.callback()), 'route4.callback() must be undefined');
+    ok(_.isUndefined(route4.constraints()), 'route4.constraints() must be undefined');
 
     //regular expression for pattern
     var regPattern = /foo\/bar/;
-    routeEntry4.pattern(regPattern);
+    route4.pattern(regPattern);
 
-    ok(_.isRegExp(routeEntry4.pattern()), '_.isRegExp(routeEntry4.pattern()) must return true');
-    equal(routeEntry4.pattern(), regPattern, 'routeEntry4.pattern() must return: ' + regPattern);
+    ok(_.isRegExp(route4.pattern()), '_.isRegExp(route4.pattern()) must return true');
+    equal(route4.pattern(), regPattern, 'route4.pattern() must return: ' + regPattern);
 
   });
 
   test('Route#isValid', function() {
 
-    var routeEntry = new Route();
+    var route = new Route();
 
-    ok(!routeEntry.isValid(), 'routeEntry.isValid() must return false');
+    ok(!route.isValid(), 'route.isValid() must return false');
 
-    routeEntry.pattern(':foo/:bar');
+    route.pattern(':foo/:bar');
 
-    ok(!routeEntry.isValid(), 'routeEntry.isValid() must return false');
+    ok(!route.isValid(), 'route.isValid() must return false');
 
-    routeEntry.callback(function(foo, bar) {
+    route.callback(function(foo, bar) {
 
     });
 
-    ok(routeEntry.isValid(), 'routeEntry.isValid must return true');
+    ok(route.isValid(), 'route.isValid must return true');
 
-    routeEntry.constraints({
+    route.constraints({
       foo: [
         'test'
       ],
@@ -137,27 +137,27 @@ $(document).ready(function() {
       ]
     });
 
-    ok(routeEntry.isValid(), 'routeEntry.isValid must return true');
+    ok(route.isValid(), 'route.isValid must return true');
 
   });
 
   test('Route#isMatched', function() {
-    var routeEntry = new Route();
-    routeEntry.callback(function() {
+    var route = new Route();
+    route.callback(function() {
 
     }); //for valid
 
-    ok(!routeEntry.isMatched('pattern/value'), 'routeEntry.isMatched(\'pattern/value\') must return false');
+    ok(!route.isMatched('pattern/value'), 'route.isMatched(\'pattern/value\') must return false');
 
-    routeEntry.pattern('/foo/bar');
-
-
-    ok(routeEntry.isMatched('/foo/bar'), 'routeEntry.isMatched(\'/foo/bar\') must return true');
+    route.pattern('/foo/bar');
 
 
-    routeEntry.pattern('/:para1/:param2');
+    ok(route.isMatched('/foo/bar'), 'route.isMatched(\'/foo/bar\') must return true');
 
-    ok(routeEntry.isMatched('/fooParam/barParam'), 'routeEntry.isMatched(\'/fooParam/barParam\') must return true');
+
+    route.pattern('/:para1/:param2');
+
+    ok(route.isMatched('/fooParam/barParam'), 'route.isMatched(\'/fooParam/barParam\') must return true');
 
   });
 
@@ -175,46 +175,46 @@ $(document).ready(function() {
 
   test('Route#toRegExp', function() {
 
-    var routeEntry = new Route();
+    var route = new Route();
 
-    ok(_.isRegExp(routeEntry.toRegExp()), 'routeEntry.toRegExp() must return a regular expression');
+    ok(_.isRegExp(route.toRegExp()), 'route.toRegExp() must return a regular expression');
 
-    ok(_.isEqual(routeEntry.toRegExp(), new RegExp()), 'routeEntry.toRegExp() must be an empty regExp');
-
-
-    routeEntry.pattern('/foo/bar');
-
-    ok(_.isEqual(routeEntry.toRegExp(), new RegExp('^/foo/bar$')), 'routeEntry.toRegExp() must be: /^/foo/bar$/');
-
-    routeEntry.pattern('/:foo/:bar');
-
-    ok(_.isEqual(routeEntry.toRegExp(), new RegExp('^/([^/]+)/([^/]+)$')), 'routeEntry.toRegExp() must return: /^/([^/]+)/([^/]+)$/');
+    ok(_.isEqual(route.toRegExp(), new RegExp()), 'route.toRegExp() must be an empty regExp');
 
 
-    routeEntry.pattern('/:foo/p:pageNumber');
+    route.pattern('/foo/bar');
 
-    ok(_.isEqual(routeEntry.toRegExp(), new RegExp('^/([^/]+)/p([^/]+)$')), 'routeEntry.toRegExp() must return: /^/([^/]+)/p([^/]+)$/');
+    ok(_.isEqual(route.toRegExp(), new RegExp('^/foo/bar$')), 'route.toRegExp() must be: /^/foo/bar$/');
+
+    route.pattern('/:foo/:bar');
+
+    ok(_.isEqual(route.toRegExp(), new RegExp('^/([^/]+)/([^/]+)$')), 'route.toRegExp() must return: /^/([^/]+)/([^/]+)$/');
+
+
+    route.pattern('/:foo/p:pageNumber');
+
+    ok(_.isEqual(route.toRegExp(), new RegExp('^/([^/]+)/p([^/]+)$')), 'route.toRegExp() must return: /^/([^/]+)/p([^/]+)$/');
 
 
     var pattern1 = /^foo\/bar\/$/i;
 
-    routeEntry.pattern(pattern1);
+    route.pattern(pattern1);
 
-    equal(routeEntry.toRegExp(), pattern1, 'routeEntry.toRegExp() must return: ' + pattern1);
+    equal(route.toRegExp(), pattern1, 'route.toRegExp() must return: ' + pattern1);
 
     var pattern2 = new RegExp('^hello/world$', 'i');
 
-    routeEntry.pattern(pattern2);
-    equal(routeEntry.toRegExp(), pattern2, 'routeEntry.toRegExp() must return: ' + pattern2);
+    route.pattern(pattern2);
+    equal(route.toRegExp(), pattern2, 'route.toRegExp() must return: ' + pattern2);
 
-    routeEntry.pattern('/download/*filePath');
+    route.pattern('/download/*filePath');
 
-    ok(_.isEqual(routeEntry.toRegExp(), new RegExp('^/download/(.*?)$')), 'routeEntry.toRegExp() must return: /^/download/(.*?)$/');
+    ok(_.isEqual(route.toRegExp(), new RegExp('^/download/(.*?)$')), 'route.toRegExp() must return: /^/download/(.*?)$/');
 
 
     //add pattern with constraints
 
-    routeEntry.pattern('/users/:userId')
+    route.pattern('/users/:userId')
               .constraints({
                 userId: [
                   'me',
@@ -224,10 +224,10 @@ $(document).ready(function() {
 
     var expectedConstraintRegExp = new RegExp('^/users/(me|\\d+)$');
 
-    ok(_.isEqual(routeEntry.toRegExp(), expectedConstraintRegExp), 'routeEntry.toRegExp() must return: /^/users/(me|\\d+)$/');
+    ok(_.isEqual(route.toRegExp(), expectedConstraintRegExp), 'route.toRegExp() must return: /^/users/(me|\\d+)$/');
 
-    ok(routeEntry.toRegExp().test('/users/me'), 'must match /users/me');
-    ok(routeEntry.toRegExp().test('/users/123'), 'must match /users/123');
+    ok(route.toRegExp().test('/users/me'), 'must match /users/me');
+    ok(route.toRegExp().test('/users/123'), 'must match /users/123');
   });
 
 
