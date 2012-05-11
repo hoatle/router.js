@@ -173,7 +173,7 @@
        */
       dispatch: function (patternValue) {
         var args = _extractParameters(this.toRegExp(), patternValue);
-        this._callback.apply(this, args);
+        this.callback().apply(this, args);
       },
 
       /**
