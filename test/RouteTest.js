@@ -155,18 +155,16 @@ $(document).ready(function() {
     ok(route.isMatched('/foo/bar'), 'route.isMatched(\'/foo/bar\') must return true');
 
 
-    //route.pattern('/:username/:repository'); //FIXME  weird
-
-    route.pattern('/:user/:repo');
+    route.pattern('/:username/:repository');
 
 
     ok(route.isMatched('/hoatle/requirejs'), 'route.isMatched(\'/hoatle/requirejs\') must return true');
 
     route.constraints({
-      user: [
+      username: [
         /\w{5,}/
       ],
-      repo: [
+      repository: [
        /\w+/
       ]
     });

@@ -191,10 +191,10 @@
         route = route.replace(escapeRegExp, '\\$&')
                      .replace(splatParam, '(.*?)');
 
-        var namedParamMatch;
-        while (namedParamMatch = namedParam.exec(route)) {
-          route = route.replace(namedParamMatch[0], this._getConstraintsRegExp(namedParamMatch[0]));
-        }
+        var namedParamMatches = route.match(namedParam);
+        _.each(namedParamMatches, function(element) {
+          route = route.replace(element, this._getConstraintsRegExp(element));
+        }, this);
 
         return this._regExp = new RegExp('^' + route + '$');
       } else if (_.isRegExp(this._pattern)) {
