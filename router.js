@@ -58,7 +58,7 @@
 
   var defaultNamedParamRegExp = '([^\/]+)';
 
-  var RouteEntry = function(pattern, callback, constraints) {
+  var Route = function(pattern, callback, constraints) {
     if (_.isString(pattern) || _.isRegExp(pattern)) {
       this.pattern(pattern);
     }
@@ -78,7 +78,7 @@
 
   };
 
-  _.extend(RouteEntry.prototype, {
+  _.extend(Route.prototype, {
     //getters, setters
 
     /**
@@ -233,8 +233,8 @@
     // properties
 
     VERSION: '0.1.0',
-    // RouteEntry class
-    RouteEntry: RouteEntry,
+    // Route class
+    Route: Route,
 
     /**
      * Gets the router's behavior or override the router's default behavior.
@@ -306,18 +306,18 @@
     },
 
     /**
-     * Adds a RouteEntry object to be registered.
+     * Adds a Route object to be registered.
      *
-     * @param routeEntry the RouteEntry object
+     * @param routeEntry the Route object
      */
     add: function(routeEntry) {
       //TODO implement
     },
 
     /**
-     * Removes a registered RouteEntry object.
+     * Removes a registered Route object.
      *
-     * @param routeEntry the RouteEntry object
+     * @param routeEntry the Route object
      */
     remove: function(routeEntry) {
       //TODO implement
