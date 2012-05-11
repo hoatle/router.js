@@ -6,7 +6,7 @@ $(document).ready(function() {
 
   var Route = router.Route;
 
-  test('Route basic', function() {
+  test('Route APIs', function() {
 
     expect(8);
 
@@ -22,7 +22,7 @@ $(document).ready(function() {
   });
 
 
-  test('Route instance', function() {
+  test('Route Getters/Setters', function() {
     var route = new Route();
     ok(_.isObject(route), 'route must be an object');
 
@@ -126,7 +126,7 @@ $(document).ready(function() {
 
     });
 
-    ok(route.isValid(), 'route.isValid must return true');
+    ok(route.isValid(), 'route.isValid() must return true');
 
     route.constraints({
       foo: [
@@ -137,7 +137,7 @@ $(document).ready(function() {
       ]
     });
 
-    ok(route.isValid(), 'route.isValid must return true');
+    ok(route.isValid(), 'route.isValid() must return true');
 
   });
 
@@ -155,9 +155,25 @@ $(document).ready(function() {
     ok(route.isMatched('/foo/bar'), 'route.isMatched(\'/foo/bar\') must return true');
 
 
-    route.pattern('/:para1/:param2');
+    //route.pattern('/:username/:repository'); //FIXME  weird
 
-    ok(route.isMatched('/fooParam/barParam'), 'route.isMatched(\'/fooParam/barParam\') must return true');
+    route.pattern('/:user/:repo');
+
+
+    ok(route.isMatched('/hoatle/requirejs'), 'route.isMatched(\'/hoatle/requirejs\') must return true');
+
+    route.constraints({
+      user: [
+        /\w{5,}/
+      ],
+      repo: [
+       /\w+/
+      ]
+    });
+
+    ok(!route.isMatched('/hoat/requirejs'), 'route.isMatched(\'/hoat/requirejs\') must return false');
+
+    ok(route.isMatched('/hoatle/requirejs'), 'route.isMatched(\'/hoatle/requirejs\') must return true');
 
   });
 

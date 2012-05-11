@@ -82,7 +82,7 @@
     //getters, setters
 
     /**
-     * Gets or sets the route entry's pattern.
+     * Gets or sets the route's pattern.
      *
      * @param newPattern
      * @return {*}
@@ -97,7 +97,7 @@
       return this._pattern;
     },
     /**
-     * Gets or sets the route entry's callback.
+     * Gets or sets the route's callback.
      *
      * @param newCallback
      * @return {*}
@@ -110,7 +110,8 @@
       return this._callback;
     },
     /**
-     * Gets or sets the route entry's constraints.
+     * Gets or sets the route's constraints.
+     *
      * @param newConstraints
      * @return {*}
      */
@@ -141,14 +142,16 @@
     },
 
     /**
-     * Checks if the route entry is valid: has required valid pattern + callback.
+     * Checks if the route is valid: has required valid pattern + callback.
      */
     isValid: function() {
       return (_.isString(this._pattern) || _.isRegExp(this._pattern)) && _.isFunction(this._callback);
     },
 
     /**
-     * Checks if the patternValue matches this route entry.
+     * Checks if the patternValue matches this route.
+     *
+     * If this route is not valid, return false.
      *
      * @param patternValue
      */
