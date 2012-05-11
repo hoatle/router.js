@@ -16,7 +16,7 @@ $(document).ready(function() {
     ok(Route.prototype.isValid, 'Route.prototype.isValid must be available');
     ok(Route.prototype.isMatched, 'Route.prototype.isMatched must be available');
     ok(Route.prototype.dispatch, 'Route.prototype.dispatch must be available');
-    ok(Route.prototype.url, 'Route.prototype.url must be available');
+    ok(Route.prototype.patternValue, 'Route.prototype.url must be available');
     ok(Route.prototype.toRegExp, 'Route.prototype.toRegExp must be available');
 
   });
@@ -204,8 +204,18 @@ $(document).ready(function() {
   });
 
 
-  test('Route#url', function() {
-    ok(true)
+  test('Route#patternValue', function() {
+    var route = new Route().pattern('/foo/bar');
+    equal(route.patternValue(), '/foo/bar', 'route.url() must return: \'/foo/bar\'');
+
+    route.pattern('/:username/:repository');
+    var urlParams = {
+      username: 'hoatle',
+      repository: 'routerjs'
+    };
+
+    equal(route.patternValue(urlParams), '/hoatle/routerjs', 'route.url(urlParams) must return: \'/hoatle/routerjs\'');
+
   });
 
 

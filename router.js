@@ -183,8 +183,15 @@
        *
        * @param extraParamIncluded boolean value
        */
-      url: function (params, extraParamIncluded) {
-        //TODO implement
+      patternValue: function (params, extraParamIncluded) {
+        var patternValue = this.pattern();
+        //TODO check valid values by its custom constraints ?
+        _.each(params, function(value, key) {
+          var regExp = new RegExp(':' + key, 'g');
+          patternValue = patternValue.replace(regExp, value);
+        });
+
+        return patternValue;
       },
 
       /**
