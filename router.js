@@ -180,10 +180,8 @@
        * Generates url path from literal params object.
        *
        * @param params the literal params object
-       *
-       * @param extraParamIncluded boolean value
        */
-      patternValue: function (params, extraParamIncluded) {
+      patternValue: function (params) {
         var patternValue = this.pattern();
         //TODO check valid values by its custom constraints ?
         _.each(params, function(value, key) {
