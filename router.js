@@ -79,8 +79,10 @@
       this._normalizedConstraints = null;
     };
 
+    /**
+     * Public APIs for Route
+     */
     _.extend(_Route.prototype, {
-      //getters, setters
 
       /**
        * Gets or sets the route's pattern.
@@ -273,7 +275,7 @@
      */
     config: function (newConfigs) {
       if (_.isObject(newConfigs)) {
-        configs = _.pick(_.defaults(newConfigs, configs), 'caseSensitivePath');
+        configs = _.pick(_.defaults(newConfigs, configs), _.keys(configs));
         return this;
       }
       return configs;
