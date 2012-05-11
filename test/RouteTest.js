@@ -6,7 +6,7 @@ $(document).ready(function() {
 
   var Route = router.Route;
 
-  test('Route basic', function() {
+  test('Route APIs', function() {
 
     expect(8);
 
@@ -22,7 +22,7 @@ $(document).ready(function() {
   });
 
 
-  test('Route instance', function() {
+  test('Route Getters/Setters', function() {
     var route = new Route();
     ok(_.isObject(route), 'route must be an object');
 
@@ -36,7 +36,7 @@ $(document).ready(function() {
         callback = function() {
           return ':foo-:bar-call-backed';
         },
-        conditions = {
+        constraints = {
           foo: [
             1,
             /a-z/
@@ -48,22 +48,24 @@ $(document).ready(function() {
 
     route.pattern(pattern);
     route.callback(callback);
-    route.constraints(conditions);
+    route.constraints(constraints);
 
     equal(route.pattern(), pattern, 'route.pattern() must be ' + pattern);
     equal(route.callback(), callback, 'route.callback() must be ' + callback);
-    equal(route.constraints(), conditions, 'route.constraints() must be ' + conditions);
+    equal(route.constraints(), constraints, 'route.constraints() must be ' + constraints);
 
     equal(route.callback()(), ':foo-:bar-call-backed', 'route.callback()() must return: \':foo-:bar-call-backed\'');
 
 
     //use constructor, then update
 
-    var route2 = new Route(pattern, callback, conditions);
+    var route2 = new Route(pattern, callback, constraints);
 
-    equal(route2.pattern(null), pattern, 'route2.pattern() must be: ' + pattern);
-    equal(route2.callback(undefined), callback, 'route2.callback() must be: ' + callback);
-    equal(route2.constraints(false), conditions, 'route2.constraints() must be: ' + conditions);
+    equal(route2.pattern(null), route2, 'route2.pattern(null) must return: ' + route2);
+    equal(route2.callback(undefined), route2, 'route2.callback(undefined) must return: ' + route2);
+    equal(route2.constraints(false), route2, 'route2.constraints(false) must return: ' + route2);
+
+    equal(route2.pattern(null).callback(undefined).constraints(false), route2, 'must return route2 with invalid setter inputs');
 
     var pattern2 = '/:foo/:bar2',
       callback2 = function() {
@@ -122,11 +124,11 @@ $(document).ready(function() {
 
     ok(!route.isValid(), 'route.isValid() must return false');
 
-    route.callback(function(foo, bar) {
+    route.callback(function() {
 
     });
 
-    ok(route.isValid(), 'route.isValid must return true');
+    ok(route.isValid(), 'route.isValid() must return true');
 
     route.constraints({
       foo: [
@@ -137,7 +139,7 @@ $(document).ready(function() {
       ]
     });
 
-    ok(route.isValid(), 'route.isValid must return true');
+    ok(route.isValid(), 'route.isValid() must return true');
 
   });
 
@@ -155,15 +157,49 @@ $(document).ready(function() {
     ok(route.isMatched('/foo/bar'), 'route.isMatched(\'/foo/bar\') must return true');
 
 
-    route.pattern('/:para1/:param2');
+    route.pattern('/:username/:repository');
 
-    ok(route.isMatched('/fooParam/barParam'), 'route.isMatched(\'/fooParam/barParam\') must return true');
+
+    ok(route.isMatched('/hoatle/requirejs'), 'route.isMatched(\'/hoatle/requirejs\') must return true');
+
+    route.constraints({
+      username: [
+        /\w{5,}/
+      ],
+      repository: [
+       /\w+/
+      ]
+    });
+
+    ok(!route.isMatched('/hoat/requirejs'), 'route.isMatched(\'/hoat/requirejs\') must return false');
+
+    ok(route.isMatched('/hoatle/requirejs'), 'route.isMatched(\'/hoatle/requirejs\') must return true');
 
   });
 
   test('Route#dispatch', function() {
 
-    ok(true);
+    var callbacked = false;
+
+    var route = new Route().pattern('/foo/bar').callback(function() {
+      callbacked = true;
+    });
+
+    route.dispatch('/foo/bar');
+
+    ok(callbacked, 'callbacked must be true');
+
+    var callbackUsername = null, callbackRepository = null;
+
+    route.pattern('/:username/:repository').callback(function(username, repository) {
+      callbackUsername = username;
+      callbackRepository = repository;
+    });
+
+    route.dispatch('/hoatle/routerjs');
+
+    equal(callbackUsername, 'hoatle', 'callbackUsername must be: \'hoatle\'');
+    equal(callbackRepository, 'routerjs', 'callbackRepository must be: \'routerjs\'');
 
   });
 

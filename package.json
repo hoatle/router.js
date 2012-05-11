@@ -1,7 +1,7 @@
 {
-  "name"          : "router",
+  "name"          : "routerjs",
   "description"   : "A router that manages the mapping and dispatching of action handlers with powerful APIs for your application",
-  "url"           : "http://hoatle.github.com/require.js",
+  "url"           : "http://hoatle.github.com/router.js",
   "keywords"      : ["util", "functional", "server", "client", "browser", "router"],
   "author"        : "Hoat Le <hoatlevan@gmail.com>",
   "contributors"  : [],

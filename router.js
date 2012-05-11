@@ -49,156 +49,169 @@
     _ = require('underscore');
   }
 
-  // cached regular expressions for matching named param parts (:nameParamPath) and
-  // splatted parts (*splattedPath) of pattern string.
+  var Route = (function () {
 
-  var namedParam    = /:\w+/g;
-  var splatParam    = /\*\w+/g;
-  var escapeRegExp  = /[-[\]{}()+?.,\\^$|#\s]/g;
+    // cached regular expressions for matching named param parts (:nameParamPath) and
+    // splatted parts (*splattedPath) of pattern string.
 
-  var defaultNamedParamRegExp = '([^\/]+)';
+    var namedParam = /:\w+/g;
+    var splatParam = /\*\w+/g;
+    var escapeRegExp = /[-[\]{}()+?.,\\^$|#\s]/g;
 
-  var Route = function(pattern, callback, constraints) {
-    if (_.isString(pattern) || _.isRegExp(pattern)) {
-      this.pattern(pattern);
-    }
+    var defaultNamedParamRegExp = '([^\/]+)';
 
-    if (_.isFunction(callback)) {
-      this.callback(callback);
-    }
-
-    if (_.isObject(constraints)) {
-      this.constraints(constraints);
-    }
-
-    //cached and lazy-loaded
-    this._regExp = null;
-    //normalizedConstraints: {namedParam: regExpString}
-    this._normalizedConstraints = null;
-
-  };
-
-  _.extend(Route.prototype, {
-    //getters, setters
-
-    /**
-     * Gets or sets the route entry's pattern.
-     *
-     * @param newPattern
-     * @return {*}
-     */
-    pattern: function(newPattern) {
-      if (_.isString(newPattern) || _.isRegExp(newPattern)) {
-        this._pattern = newPattern;
-        //clear cache
-        this._regExp = null;
-        return this;
+    var _Route = function (pattern, callback, constraints) {
+      if (_.isString(pattern) || _.isRegExp(pattern)) {
+        this.pattern(pattern);
       }
-      return this._pattern;
-    },
-    /**
-     * Gets or sets the route entry's callback.
-     *
-     * @param newCallback
-     * @return {*}
-     */
-    callback: function(newCallback) {
-      if (_.isFunction(newCallback)) {
-        this._callback = newCallback;
-        return this;
+
+      if (_.isFunction(callback)) {
+        this.callback(callback);
       }
-      return this._callback;
-    },
-    /**
-     * Gets or sets the route entry's constraints.
-     * @param newConstraints
-     * @return {*}
-     */
-    constraints: function(newConstraints) {
-      if (_.isObject(newConstraints)) {
-        //clear cached
-        this._regExp = null;
-        this._constraints = newConstraints;
 
-        //normalize constraints
-        var normalizedConstraints = _.clone(newConstraints);
+      if (_.isObject(constraints)) {
+        this.constraints(constraints);
+      }
 
-        _.each(normalizedConstraints, function(value, key) {
-          _.each(value, function(element, index) {
-            if (_.isRegExp(element)) {
-              var regExpStr = element.toString();
-              value.splice(index, 1, regExpStr.substr(1, regExpStr.length - 2));
+      //cached and lazy-loaded
+      this._regExp = null;
+      //normalizedConstraints: {namedParam: regExpString}
+      this._normalizedConstraints = null;
+    };
+
+    _.extend(_Route.prototype, {
+      //getters, setters
+
+      /**
+       * Gets or sets the route's pattern.
+       *
+       * @param newPattern
+       * @return {*}
+       */
+      pattern: function (newPattern) {
+        if (_.isString(newPattern) || _.isRegExp(newPattern)) {
+          this._pattern = newPattern;
+          //clear cache
+          this._regExp = null;
+          return this;
+        } else if (arguments.length > 0) {
+          return this;
+        }
+        return this._pattern;
+      },
+      /**
+       * Gets or sets the route's callback.
+       *
+       * @param newCallback
+       * @return {*}
+       */
+      callback: function (newCallback) {
+        if (_.isFunction(newCallback)) {
+          this._callback = newCallback;
+          return this;
+        } else if (arguments.length > 0) {
+          return this;
+        }
+        return this._callback;
+      },
+      /**
+       * Gets or sets the route's constraints.
+       *
+       * @param newConstraints
+       * @return {*}
+       */
+      constraints: function (newConstraints) {
+        if (_.isObject(newConstraints)) {
+          //clear cached
+          this._regExp = null;
+          this._constraints = newConstraints;
+
+          //normalize constraints
+          var normalizedConstraints = _.clone(newConstraints);
+
+          _.each(normalizedConstraints, function (value, key) {
+            _.each(value, function (element, index) {
+              if (_.isRegExp(element)) {
+                var regExpStr = element.toString();
+                value.splice(index, 1, regExpStr.substr(1, regExpStr.length - 2));
+              }
+            });
+            if (value.length > 1) {
+              normalizedConstraints[key] = '(' + value.join('|') + ')';
             }
           });
-          if (value.length > 1) {
-            normalizedConstraints[key] = '(' + value.join('|') + ')';
-          }
-        });
-        this._normalizedConstraints = normalizedConstraints;
-        return this;
-      }
-      return this._constraints;
-    },
-
-    /**
-     * Checks if the route entry is valid: has required valid pattern + callback.
-     */
-    isValid: function() {
-      return (_.isString(this._pattern) || _.isRegExp(this._pattern)) && _.isFunction(this._callback);
-    },
-
-    /**
-     * Checks if the patternValue matches this route entry.
-     *
-     * @param patternValue
-     */
-    isMatched: function(patternValue) {
-      return this.isValid() ? this.toRegExp().test(patternValue) : false;
-    },
-
-    /**
-     * Dispatches the matched pattern value to the corresponding callback.
-     *
-     * @param patternValue
-     */
-    dispatch: function(patternValue) {
-      //TODO implement
-    },
-
-    /**
-     * Generates url path from literal params object.
-     *
-     * @param params the literal params object
-     *
-     * @param extraParamIncluded boolean value
-     */
-    url: function(params, extraParamIncluded) {
-      //TODO implement
-    },
-
-    /**
-     * Converts the pattern and constraints if any to regular expression.
-     */
-    toRegExp: function() {
-      if (this._regExp) {
-        return this._regExp;
-      }
-      if (_.isString(this._pattern)) {
-        var route = this._pattern;
-        route = route.replace(escapeRegExp, '\\$&')
-                     .replace(splatParam, '(.*?)');
-
-        var namedParamMatch;
-        while (namedParamMatch = namedParam.exec(route)) {
-          route = route.replace(namedParamMatch[0], this._getConstraintsRegExp(namedParamMatch[0]));
+          this._normalizedConstraints = normalizedConstraints;
+          return this;
+        } else if (arguments.length > 0) {
+          return this;
         }
+        return this._constraints;
+      },
 
-        return this._regExp = new RegExp('^' + route + '$');
-      } else if (_.isRegExp(this._pattern)) {
-        return this._regExp = this._pattern;
+      /**
+       * Checks if the route is valid: has required valid pattern + callback.
+       */
+      isValid: function () {
+        return (_.isString(this._pattern) || _.isRegExp(this._pattern)) && _.isFunction(this._callback);
+      },
+
+      /**
+       * Checks if the patternValue matches this route.
+       *
+       * If this route is not valid, return false.
+       *
+       * @param patternValue
+       */
+      isMatched: function (patternValue) {
+        return this.isValid() ? this.toRegExp().test(patternValue) : false;
+      },
+
+      /**
+       * Dispatches the matched pattern value to the corresponding callback.
+       *
+       * @param patternValue
+       */
+      dispatch: function (patternValue) {
+        var args = _extractParameters(this.toRegExp(), patternValue);
+        this.callback().apply(this, args);
+      },
+
+      /**
+       * Generates url path from literal params object.
+       *
+       * @param params the literal params object
+       *
+       * @param extraParamIncluded boolean value
+       */
+      url: function (params, extraParamIncluded) {
+        //TODO implement
+      },
+
+      /**
+       * Converts the pattern and constraints if any to regular expression.
+       */
+      toRegExp: function () {
+        if (this._regExp) {
+          return this._regExp;
+        }
+        if (_.isString(this._pattern)) {
+          var route = this._pattern;
+          route = route.replace(escapeRegExp, '\\$&')
+            .replace(splatParam, '(.*?)');
+
+          var namedParamMatches = route.match(namedParam);
+          _.each(namedParamMatches, function (element) {
+            route = route.replace(element, _getConstraintsRegExp.call(this, element));
+          }, this);
+
+          return this._regExp = new RegExp('^' + route + '$');
+        } else if (_.isRegExp(this._pattern)) {
+          return this._regExp = this._pattern;
+        }
+        return new RegExp();
       }
-      return new RegExp();
-    },
+
+    });
 
     //private methods
 
@@ -208,23 +221,35 @@
      * @param namedParamMatch the namedParamMatch with format: [:nameParam].
      * @private
      */
-    _getConstraintsRegExp: function(namedParamMatch) {
+     function _getConstraintsRegExp(namedParamMatch) {
 
-      var namedParam = namedParamMatch.substr(1, namedParamMatch.length);
+       var namedParam = namedParamMatch.substr(1, namedParamMatch.length);
 
-      if (this._normalizedConstraints && this._normalizedConstraints[namedParam]) {
-        return this._normalizedConstraints[namedParam];
-      }
+       if (this._normalizedConstraints && this._normalizedConstraints[namedParam]) {
+         return this._normalizedConstraints[namedParam];
+       }
 
-      return defaultNamedParamRegExp;
+       return defaultNamedParamRegExp;
+     }
+
+    /**
+     * Extracts the array of matched parameter by route regular expression.
+     *
+     * @param routeRegExp the route regular expression
+     * @param patternValue the pattern value to be extracted.
+     * @return {*}
+     * @private
+     */
+    function _extractParameters(routeRegExp, patternValue) {
+      return routeRegExp.exec(patternValue).slice(1);
     }
 
+    return _Route;
 
-
-  });
+  })();
 
   // default configurations
-  var configs  = {
+  var configs = {
     caseSensitivePath: true
   };
 
@@ -241,7 +266,7 @@
      *
      * @param newConfigs the literal configuration object
      */
-    config: function(newConfigs) {
+    config: function (newConfigs) {
       if (_.isObject(newConfigs)) {
         configs = _.pick(_.defaults(newConfigs, configs), 'caseSensitivePath');
         return this;
@@ -300,7 +325,7 @@
      * Return the Rout object if found, otherwise, null.
      * @param pattern
      */
-    find: function(pattern) {
+    find: function (pattern) {
       //TODO implement
       return null;
     },
@@ -310,7 +335,7 @@
      *
      * @param routeEntry the Route object
      */
-    add: function(routeEntry) {
+    add: function (routeEntry) {
       //TODO implement
     },
 
@@ -319,7 +344,7 @@
      *
      * @param routeEntry the Route object
      */
-    remove: function(routeEntry) {
+    remove: function (routeEntry) {
       //TODO implement
     },
 
@@ -458,7 +483,7 @@
      * Runs Router.js in *noConflict* mode, returning the `router` object
      * to its previous owner. Returns a reference to this `router` object.
      */
-    noConflict: function() {
+    noConflict: function () {
       if (previousRouter !== undefined) {
         root.router = previousRouter;
       }
