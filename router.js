@@ -172,7 +172,8 @@
        * @param patternValue
        */
       dispatch: function (patternValue) {
-        this._callback();
+        var args = _extractParameters(this.toRegExp(), patternValue);
+        this._callback.apply(this, args);
       },
 
       /**
@@ -222,13 +223,25 @@
      */
      function _getConstraintsRegExp(namedParamMatch) {
 
-      var namedParam = namedParamMatch.substr(1, namedParamMatch.length);
+       var namedParam = namedParamMatch.substr(1, namedParamMatch.length);
 
-      if (this._normalizedConstraints && this._normalizedConstraints[namedParam]) {
-        return this._normalizedConstraints[namedParam];
-      }
+       if (this._normalizedConstraints && this._normalizedConstraints[namedParam]) {
+         return this._normalizedConstraints[namedParam];
+       }
 
-      return defaultNamedParamRegExp;
+       return defaultNamedParamRegExp;
+     }
+
+    /**
+     * Extracts the array of matched parameter by route regular expression.
+     *
+     * @param routeRegExp the route regular expression
+     * @param patternValue the pattern value to be extracted.
+     * @return {*}
+     * @private
+     */
+    function _extractParameters(routeRegExp, patternValue) {
+      return routeRegExp.exec(patternValue).slice(1);
     }
 
     return _Route;

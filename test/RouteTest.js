@@ -189,6 +189,17 @@ $(document).ready(function() {
 
     ok(callbacked, 'callbacked must be true');
 
+    var callbackUsername = null, callbackRepository = null;
+
+    route.pattern('/:username/:repository').callback(function(username, repository) {
+      callbackUsername = username;
+      callbackRepository = repository;
+    });
+
+    route.dispatch('/hoatle/routerjs');
+
+    equal(callbackUsername, 'hoatle', 'callbackUsername must be: \'hoatle\'');
+    equal(callbackRepository, 'routerjs', 'callbackRepository must be: \'routerjs\'');
 
   });
 
