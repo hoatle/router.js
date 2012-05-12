@@ -185,12 +185,18 @@
        */
       patternValue: function (params) {
         var patternValue = this.pattern();
-        //TODO check valid values by its custom constraints ?
+        var constraints = this.constraints();
         _.each(params, function(value, key) {
+          if (constraints && constraints[key]) {
+            //TODO performance enhancement
+            if (!new RegExp(_getConstraintsRegExpSource.call(this, ':' + key)).test(value)) {
+              return;
+            }
+          }
           var namedParamRegExp = new RegExp(':' + key, 'g');
           var splattedParamRegExp = new RegExp('\\*' + key, 'g');
           patternValue = patternValue.replace(namedParamRegExp, value).replace(splattedParamRegExp, value);
-        });
+        }, this);
 
         return patternValue;
       },
@@ -209,7 +215,7 @@
 
           var namedParamMatches = route.match(namedParam);
           _.each(namedParamMatches, function (element) {
-            route = route.replace(element, _getConstraintsRegExp.call(this, element));
+            route = route.replace(element, _getConstraintsRegExpSource.call(this, element));
           }, this);
 
           return this._regExp = new RegExp('^' + route + '$');
@@ -224,12 +230,12 @@
     //private methods
 
     /**
-     * Gets constraints regular expression for a namedParamMatch.
+     * Gets constraints regular expression source for a namedParamMatch.
      *
      * @param namedParamMatch the namedParamMatch with format: [:nameParam].
      * @private
      */
-     function _getConstraintsRegExp(namedParamMatch) {
+     function _getConstraintsRegExpSource(namedParamMatch) {
 
        var namedParam = namedParamMatch.substr(1, namedParamMatch.length);
 

@@ -225,6 +225,22 @@ $(document).ready(function() {
 
     equal(route.patternValue(urlParams), '/hoatle/download/repository/routerjs/routerjs.js', 'must return: \'/hoatle/download/repository/routerjs/routerjs.js\'');
 
+    //custom constraints
+
+    route.constraints({
+      username: [
+        /\w{5,}/
+      ]
+    });
+
+    urlParams = {
+      username: 'hoat',
+      filePath: 'repository/routerjs/routerjs.js'
+    };
+
+    equal(route.patternValue(urlParams), '/:username/download/repository/routerjs/routerjs.js', 'must return: \'/:username/download/repository/routerjs/routerjs.js\'');
+
+
 
   });
 
