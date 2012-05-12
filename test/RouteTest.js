@@ -216,6 +216,16 @@ $(document).ready(function() {
 
     equal(route.patternValue(urlParams), '/hoatle/routerjs', 'route.url(urlParams) must return: \'/hoatle/routerjs\'');
 
+    route.pattern('/:username/download/*filePath');
+
+    urlParams = {
+      username: 'hoatle',
+      filePath: 'repository/routerjs/routerjs.js'
+    };
+
+    equal(route.patternValue(urlParams), '/hoatle/download/repository/routerjs/routerjs.js', 'must return: \'/hoatle/download/repository/routerjs/routerjs.js\'');
+
+
   });
 
 

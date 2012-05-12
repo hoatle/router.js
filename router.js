@@ -187,8 +187,9 @@
         var patternValue = this.pattern();
         //TODO check valid values by its custom constraints ?
         _.each(params, function(value, key) {
-          var regExp = new RegExp(':' + key, 'g');
-          patternValue = patternValue.replace(regExp, value);
+          var namedParamRegExp = new RegExp(':' + key, 'g');
+          var splattedParamRegExp = new RegExp('\\*' + key, 'g');
+          patternValue = patternValue.replace(namedParamRegExp, value).replace(splattedParamRegExp, value);
         });
 
         return patternValue;
