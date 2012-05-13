@@ -71,7 +71,7 @@ $(document).ready(function() {
       callback2 = function() {
         return ':foo-:bar-call-backed2';
       },
-      conditions2 = {
+      constraints = {
         foo2: [
           1,
           /a-z/
@@ -83,17 +83,17 @@ $(document).ready(function() {
 
     //chaining
 
-    route2.pattern(pattern2).callback(callback2).constraints(conditions2);
+    route2.pattern(pattern2).callback(callback2).constraints(constraints);
 
     equal(route2.pattern(), pattern2, 'route2.pattern() must be ' + pattern2);
     equal(route2.callback(), callback2, 'route2.callback() must be ' + callback2);
-    equal(route2.constraints(), conditions2, 'route2.constraints() must be ' + conditions2);
+    equal(route2.constraints(), constraints, 'route2.constraints() must be ' + constraints);
 
-    var route3 = new Route().pattern(pattern2).callback(callback2).constraints(conditions2);
+    var route3 = new Route().pattern(pattern2).callback(callback2).constraints(constraints);
 
     equal(route3.pattern(), pattern2, 'route3.pattern() must be ' + pattern2);
     equal(route3.callback(), callback2, 'route3.callback() must be ' + callback2);
-    equal(route3.constraints(), conditions2, 'route3.constraints() must be ' + conditions2);
+    equal(route3.constraints(), constraints, 'route3.constraints() must be ' + constraints);
 
 
 

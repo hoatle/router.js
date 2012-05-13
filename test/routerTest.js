@@ -90,11 +90,43 @@ $(document).ready(function() {
     //not finished as a route must require a pattern + callback.
     router.map('/foo/bar/');
     var found = router.find('/foo/bar/');
+
     ok(_.isNull(found), 'found must be null');
 
-    router.map('/foo/bar/', function() {
+    var returnedRouter;
+
+    returnedRouter = router.map('/foo/bar/', function() {
       //empty callback
     });
+
+    equal(returnedRouter, router, 'must return router');
+
+    returnedRouter = router.map('/:username/:repository', function() {
+      //callback
+    }, {
+      //constraints
+      username: [
+        /\w{5,}/
+      ],
+      repository: [
+        /\w/
+      ]
+    });
+
+    equal(returnedRouter, router, 'must return router');
+
+    returnedRouter = router.map('GET /:username/:repository', function() {
+
+    }, {
+      username: [
+        /\w{5,}/
+      ],
+      repository: [
+        /\w/
+      ]
+    });
+
+    equal(returnedRouter, router, 'must return router');
 
   });
 
