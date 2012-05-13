@@ -174,12 +174,16 @@
        * @param patternValue
        */
       dispatch: function (patternValue) {
-        var args = _extractParameters(this.toRegExp(), patternValue);
+        var args = _extractParameters.call(this, patternValue);
         this.callback().apply(this, args);
       },
 
       /**
-       * Generates url path from literal params object.
+       * Generates pattern value from literal params object.
+       *
+       * For example with pattern: /:username/:repository
+       *
+       * => route.patternValue({username:'hoatle', 'routerjs'}) will return: /hoatle/routerjs
        *
        * @param params the literal params object
        */
@@ -205,7 +209,7 @@
        * Converts the pattern and constraints if any to regular expression.
        */
       toRegExp: function () {
-        if (this._regExp) {
+        if (_.isRegExp(this._regExp)) {
           return this._regExp;
         }
         if (_.isString(this._pattern)) {
@@ -254,8 +258,8 @@
      * @return {*}
      * @private
      */
-    function _extractParameters(routeRegExp, patternValue) {
-      return routeRegExp.exec(patternValue).slice(1);
+    function _extractParameters(patternValue) {
+      return this.toRegExp().exec(patternValue).slice(1);
     }
 
     return _Route;
