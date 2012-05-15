@@ -8,16 +8,54 @@ $(document).ready(function() {
 
   test('Route APIs', function() {
 
-    expect(8);
+    expect(9);
 
+    ok(Route.prototype.method, 'Route.prototype.method must be available');
     ok(Route.prototype.pattern, 'Route.prototype.pattern must be available');
     ok(Route.prototype.callback, 'Route.prototype.callback must be available');
     ok(Route.prototype.constraints, 'Route.prototype.constraints must be available');
     ok(Route.prototype.isValid, 'Route.prototype.isValid must be available');
     ok(Route.prototype.isMatched, 'Route.prototype.isMatched must be available');
     ok(Route.prototype.dispatch, 'Route.prototype.dispatch must be available');
-    ok(Route.prototype.url, 'Route.prototype.url must be available');
+    ok(Route.prototype.patternValue, 'Route.prototype.url must be available');
     ok(Route.prototype.toRegExp, 'Route.prototype.toRegExp must be available');
+
+  });
+
+  test('Route Constructor', function() {
+    var method = 'GET',
+        pattern = '/:foo/:bar',
+        callback = function() {},
+        constraints = {foo: [], bar: []};
+
+    var route = new Route(pattern, callback, constraints);
+
+    equal(route.method(), undefined, 'route.method() must be undefined');
+    equal(route.pattern(), pattern, 'route.pattern() must return: ' + pattern);
+    equal(route.callback(), callback, 'route.callback() must return: ' + callback);
+    equal(route.constraints(), constraints, 'route.constraints() must return: ' + constraints);
+
+    route = new Route(method, pattern, callback, constraints);
+
+    equal(route.method(), method, 'route.method() must return: ' + method);
+    equal(route.pattern(), pattern, 'route.pattern() must return: ' + pattern);
+    equal(route.callback(), callback, 'route.callback() must return: ' + callback);
+    equal(route.constraints(), constraints, 'route.constraints() must return: ' + constraints);
+
+    pattern = /\/foo\/bar/;
+
+    route = new Route(pattern, callback);
+    equal(route.method(), undefined, 'route.method() must be undefined');
+    equal(route.pattern(), pattern, 'route.pattern() must return: ' + pattern);
+    equal(route.callback(), callback, 'route.callback() must return: ' + callback);
+    equal(route.constraints(), undefined, 'route.constraints() must be undefined');
+
+    route = new Route(method, pattern, callback);
+
+    equal(route.method(), method, 'route.method() must return: ' + method);
+    equal(route.pattern(), pattern, 'route.pattern() must return: ' + pattern);
+    equal(route.callback(), callback, 'route.callback() must return: ' + callback);
+    equal(route.constraints(), undefined, 'route.constraints() must be undefined');
 
   });
 
@@ -26,13 +64,15 @@ $(document).ready(function() {
     var route = new Route();
     ok(_.isObject(route), 'route must be an object');
 
+    equal(route.method(), undefined, 'route.method() must be undefined');
     equal(route.pattern(), undefined, 'route.pattern() must be undefined');
     equal(route.callback(), undefined, 'route.callback() must be undefined');
     equal(route.constraints(), undefined, 'route.constraints() must be undefined');
 
     //sets
 
-    var pattern = '/:foo/:bar',
+    var method = 'GET',
+        pattern = '/:foo/:bar',
         callback = function() {
           return ':foo-:bar-call-backed';
         },
@@ -46,10 +86,12 @@ $(document).ready(function() {
           ]
         };
 
+    route.method(method);
     route.pattern(pattern);
     route.callback(callback);
     route.constraints(constraints);
 
+    equal(route.method(), method, 'route.method() must be: ' + method);
     equal(route.pattern(), pattern, 'route.pattern() must be ' + pattern);
     equal(route.callback(), callback, 'route.callback() must be ' + callback);
     equal(route.constraints(), constraints, 'route.constraints() must be ' + constraints);
@@ -61,6 +103,7 @@ $(document).ready(function() {
 
     var route2 = new Route(pattern, callback, constraints);
 
+    equal(route2.method(false), route2, 'route2.method(false) must return: ' + route2);
     equal(route2.pattern(null), route2, 'route2.pattern(null) must return: ' + route2);
     equal(route2.callback(undefined), route2, 'route2.callback(undefined) must return: ' + route2);
     equal(route2.constraints(false), route2, 'route2.constraints(false) must return: ' + route2);
@@ -71,7 +114,7 @@ $(document).ready(function() {
       callback2 = function() {
         return ':foo-:bar-call-backed2';
       },
-      conditions2 = {
+      constraints = {
         foo2: [
           1,
           /a-z/
@@ -83,17 +126,17 @@ $(document).ready(function() {
 
     //chaining
 
-    route2.pattern(pattern2).callback(callback2).constraints(conditions2);
+    route2.pattern(pattern2).callback(callback2).constraints(constraints);
 
     equal(route2.pattern(), pattern2, 'route2.pattern() must be ' + pattern2);
     equal(route2.callback(), callback2, 'route2.callback() must be ' + callback2);
-    equal(route2.constraints(), conditions2, 'route2.constraints() must be ' + conditions2);
+    equal(route2.constraints(), constraints, 'route2.constraints() must be ' + constraints);
 
-    var route3 = new Route().pattern(pattern2).callback(callback2).constraints(conditions2);
+    var route3 = new Route().pattern(pattern2).callback(callback2).constraints(constraints);
 
     equal(route3.pattern(), pattern2, 'route3.pattern() must be ' + pattern2);
     equal(route3.callback(), callback2, 'route3.callback() must be ' + callback2);
-    equal(route3.constraints(), conditions2, 'route3.constraints() must be ' + conditions2);
+    equal(route3.constraints(), constraints, 'route3.constraints() must be ' + constraints);
 
 
 
@@ -204,8 +247,44 @@ $(document).ready(function() {
   });
 
 
-  test('Route#url', function() {
-    ok(true)
+  test('Route#patternValue', function() {
+    var route = new Route().pattern('/foo/bar');
+    equal(route.patternValue(), '/foo/bar', 'route.url() must return: \'/foo/bar\'');
+
+    route.pattern('/:username/:repository');
+    var urlParams = {
+      username: 'hoatle',
+      repository: 'routerjs'
+    };
+
+    equal(route.patternValue(urlParams), '/hoatle/routerjs', 'route.url(urlParams) must return: \'/hoatle/routerjs\'');
+
+    route.pattern('/:username/download/*filePath');
+
+    urlParams = {
+      username: 'hoatle',
+      filePath: 'repository/routerjs/routerjs.js'
+    };
+
+    equal(route.patternValue(urlParams), '/hoatle/download/repository/routerjs/routerjs.js', 'must return: \'/hoatle/download/repository/routerjs/routerjs.js\'');
+
+    //custom constraints
+
+    route.constraints({
+      username: [
+        /\w{5,}/
+      ]
+    });
+
+    urlParams = {
+      username: 'hoat',
+      filePath: 'repository/routerjs/routerjs.js'
+    };
+
+    equal(route.patternValue(urlParams), '/:username/download/repository/routerjs/routerjs.js', 'must return: \'/:username/download/repository/routerjs/routerjs.js\'');
+
+
+
   });
 
 

@@ -49,6 +49,13 @@
     _ = require('underscore');
   }
 
+  /**
+   * Supported methods specified by http 1.1
+   *
+   * @type {Array}
+   */
+  var supportedMethods = ['OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT'];
+
   var Route = (function () {
 
     // cached regular expressions for matching named param parts (:nameParamPath) and
@@ -60,7 +67,17 @@
 
     var defaultNamedParamRegExp = '([^\/]+)';
 
-    var _Route = function (pattern, callback, constraints) {
+    var _Route = function (method, pattern, callback, constraints) {
+      if (!_.isString(pattern) && !_.isRegExp(pattern)) {
+        constraints = callback;
+        callback = pattern;
+        pattern = method;
+      }
+
+      if (_.isString(method)) {
+        this.method(method);
+      }
+
       if (_.isString(pattern) || _.isRegExp(pattern)) {
         this.pattern(pattern);
       }
@@ -79,8 +96,27 @@
       this._normalizedConstraints = null;
     };
 
+    /**
+     * Public APIs for Route
+     */
     _.extend(_Route.prototype, {
-      //getters, setters
+
+      /**
+       * Gets or sets the route's http method.
+       * The method name is case-insensitive with the specified http 1.1 methods.
+       *
+       * @param newMethod the http method name
+       * @return {*}
+       */
+      method: function(newMethod) {
+        if (newMethod && _.indexOf(supportedMethods, newMethod.toUpperCase()) > -1) {
+          this._method = newMethod;
+          return this;
+        } else if (arguments.length > 0) {
+          return this;
+        }
+        return this._method;
+      },
 
       /**
        * Gets or sets the route's pattern.
@@ -172,26 +208,42 @@
        * @param patternValue
        */
       dispatch: function (patternValue) {
-        var args = _extractParameters(this.toRegExp(), patternValue);
+        var args = _extractParameters.call(this, patternValue);
         this.callback().apply(this, args);
       },
 
       /**
-       * Generates url path from literal params object.
+       * Generates pattern value from literal params object.
+       *
+       * For example with pattern: /:username/:repository
+       *
+       * => route.patternValue({username:'hoatle', 'routerjs'}) will return: /hoatle/routerjs
        *
        * @param params the literal params object
-       *
-       * @param extraParamIncluded boolean value
        */
-      url: function (params, extraParamIncluded) {
-        //TODO implement
+      patternValue: function (params) {
+        var patternValue = this.pattern();
+        var constraints = this.constraints();
+        _.each(params, function(value, key) {
+          if (constraints && constraints[key]) {
+            //TODO performance enhancement
+            if (!new RegExp(_getConstraintsRegExpSource.call(this, ':' + key)).test(value)) {
+              return;
+            }
+          }
+          var namedParamRegExp = new RegExp(':' + key, 'g');
+          var splattedParamRegExp = new RegExp('\\*' + key, 'g');
+          patternValue = patternValue.replace(namedParamRegExp, value).replace(splattedParamRegExp, value);
+        }, this);
+
+        return patternValue;
       },
 
       /**
        * Converts the pattern and constraints if any to regular expression.
        */
       toRegExp: function () {
-        if (this._regExp) {
+        if (_.isRegExp(this._regExp)) {
           return this._regExp;
         }
         if (_.isString(this._pattern)) {
@@ -201,7 +253,7 @@
 
           var namedParamMatches = route.match(namedParam);
           _.each(namedParamMatches, function (element) {
-            route = route.replace(element, _getConstraintsRegExp.call(this, element));
+            route = route.replace(element, _getConstraintsRegExpSource.call(this, element));
           }, this);
 
           return this._regExp = new RegExp('^' + route + '$');
@@ -216,12 +268,12 @@
     //private methods
 
     /**
-     * Gets constraints regular expression for a namedParamMatch.
+     * Gets constraints regular expression source for a namedParamMatch.
      *
      * @param namedParamMatch the namedParamMatch with format: [:nameParam].
      * @private
      */
-     function _getConstraintsRegExp(namedParamMatch) {
+     function _getConstraintsRegExpSource(namedParamMatch) {
 
        var namedParam = namedParamMatch.substr(1, namedParamMatch.length);
 
@@ -240,8 +292,8 @@
      * @return {*}
      * @private
      */
-    function _extractParameters(routeRegExp, patternValue) {
-      return routeRegExp.exec(patternValue).slice(1);
+    function _extractParameters(patternValue) {
+      return this.toRegExp().exec(patternValue).slice(1);
     }
 
     return _Route;
@@ -268,7 +320,7 @@
      */
     config: function (newConfigs) {
       if (_.isObject(newConfigs)) {
-        configs = _.pick(_.defaults(newConfigs, configs), 'caseSensitivePath');
+        configs = _.pick(_.defaults(newConfigs, configs), _.keys(configs));
         return this;
       }
       return configs;
