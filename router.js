@@ -264,7 +264,7 @@
       },
 
       /**
-       * Checks if the argument route is equal to this route:
+       * Checks if the argument route is equal to this route by checking the following properties:
        * + the same method
        * + the same pattern
        * + the same callback
@@ -272,7 +272,7 @@
        *
        * @param route
        */
-      isEqual: function(route) {
+      equals: function(route) {
         return _.isEqual(this.method(), route.method()) &&
                _.isEqual(this.pattern(), route.pattern()) &&
                _.isEqual(this.callback(), route.callback()) &&
