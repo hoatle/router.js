@@ -8,7 +8,7 @@ $(document).ready(function() {
 
   test('Route APIs', function() {
 
-    expect(9);
+    expect(10);
 
     ok(Route.prototype.method, 'Route.prototype.method must be available');
     ok(Route.prototype.pattern, 'Route.prototype.pattern must be available');
@@ -19,6 +19,7 @@ $(document).ready(function() {
     ok(Route.prototype.dispatch, 'Route.prototype.dispatch must be available');
     ok(Route.prototype.patternValue, 'Route.prototype.url must be available');
     ok(Route.prototype.toRegExp, 'Route.prototype.toRegExp must be available');
+    ok(Route.prototype.isEqual, 'Route.prototype.isEqual must be available');
 
   });
 
@@ -343,6 +344,38 @@ $(document).ready(function() {
 
     ok(route.toRegExp().test('/users/me'), 'must match /users/me');
     ok(route.toRegExp().test('/users/123'), 'must match /users/123');
+  });
+
+
+  test('Route#isEqual', function() {
+
+    var route1 = new Route();
+    var route2 = new Route();
+
+    ok(route1.isEqual(route2), 'route1.isEqual(route2) must return true');
+    ok(route2.isEqual(route1), 'route2.isEqual(route1) must return true');
+
+    var method = 'POST',
+        pattern = '/:username/:repository',
+        callback = function() {},
+        constraints = {
+          username: [
+            /\w{5,}/
+          ],
+          repository: [
+            /\w/
+          ]
+        };
+
+    route1 = new Route(method, pattern, callback, constraints);
+
+    ok(!route1.isEqual(route2), 'route1.isEqual(route2) must return false');
+
+    route2 = new Route(method, pattern, callback, constraints);
+
+    ok(route2.isEqual(route1), 'route2.isEqual(route1) must return true');
+
+
   });
 
 

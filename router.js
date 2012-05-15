@@ -261,6 +261,22 @@
           return this._regExp = this._pattern;
         }
         return new RegExp();
+      },
+
+      /**
+       * Checks if the argument route is equal to this route:
+       * + the same method
+       * + the same pattern
+       * + the same callback
+       * + the same constraints
+       *
+       * @param route
+       */
+      isEqual: function(route) {
+        return _.isEqual(this.method(), route.method()) &&
+               _.isEqual(this.pattern(), route.pattern()) &&
+               _.isEqual(this.callback(), route.callback()) &&
+               _.isEqual(this.constraints(), route.constraints());
       }
 
     });
