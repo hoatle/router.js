@@ -49,6 +49,13 @@
     _ = require('underscore');
   }
 
+  /**
+   * Supported methods specified by http 1.1
+   *
+   * @type {Array}
+   */
+  var supportedMethods = ['OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT'];
+
   var Route = (function () {
 
     // cached regular expressions for matching named param parts (:nameParamPath) and
@@ -60,7 +67,17 @@
 
     var defaultNamedParamRegExp = '([^\/]+)';
 
-    var _Route = function (pattern, callback, constraints) {
+    var _Route = function (method, pattern, callback, constraints) {
+      if (!_.isString(pattern) && !_.isRegExp(pattern)) {
+        constraints = callback;
+        callback = pattern;
+        pattern = method;
+      }
+
+      if (_.isString(method)) {
+        this.method(method);
+      }
+
       if (_.isString(pattern) || _.isRegExp(pattern)) {
         this.pattern(pattern);
       }
@@ -83,6 +100,23 @@
      * Public APIs for Route
      */
     _.extend(_Route.prototype, {
+
+      /**
+       * Gets or sets the route's http method.
+       * The method name is case-insensitive with the specified http 1.1 methods.
+       *
+       * @param newMethod the http method name
+       * @return {*}
+       */
+      method: function(newMethod) {
+        if (newMethod && _.indexOf(supportedMethods, newMethod.toUpperCase()) > -1) {
+          this._method = newMethod;
+          return this;
+        } else if (arguments.length > 0) {
+          return this;
+        }
+        return this._method;
+      },
 
       /**
        * Gets or sets the route's pattern.
