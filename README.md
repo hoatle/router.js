@@ -1,3 +1,5 @@
+# routerjs [![Build Status](https://secure.travis-ci.org/hoatle/router.js.png?branch=master)](http://travis-ci.org/hoatle/router.js)
+
 <pre>
                      __
                     /\ \__                   __
