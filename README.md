@@ -15,7 +15,7 @@ router.js is developed to make it easy to map and route action handlers on both 
 
 ## Resources
 
-* Unit test: http://hoatle.github.com/router.js/test/
+* Browser unit test: http://hoatle.github.com/router.js/test/
 
 ## Use it on client side
 
