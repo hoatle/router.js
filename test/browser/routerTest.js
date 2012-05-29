@@ -60,7 +60,8 @@ $(document).ready(function() {
 
     //default config
     var defaultConfig = {
-      caseSensitivePath: true
+      caseSensitivePath: true,
+      ignoreTrailingSlash: true
     };
 
     deepEqual(router.config(), defaultConfig, 'router.config() must return: ' + defaultConfig);
@@ -71,12 +72,23 @@ $(document).ready(function() {
     };
 
     var newExpectedConfig = {
-      caseSensitivePath: false
+      caseSensitivePath: false,
+      ignoreTrailingSlash: true
     };
 
     router.config(newConfig);
 
     deepEqual(router.config(), newExpectedConfig, 'router.config() must return: ' + newExpectedConfig);
+
+    newConfig = {
+      caseSensitivePath: false,
+      ignoreTrailingSlash: false
+    };
+
+    router.config(newConfig);
+
+    deepEqual(router.config(), newConfig, 'router.config() must return: ' + newConfig);
+
 
   });
 
